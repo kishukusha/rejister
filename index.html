@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>研修用レジ</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+    * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        margin: 0;
+        background: #eeeeee;
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+                     "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+        color: #222;
+    }
+
+    .header {
+        background: #1f2937;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .container {
+        max-width: 700px;
+        margin: auto;
+        padding: 12px;
+    }
+
+    .panel {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,.12);
+    }
+
+    h2 {
+        margin: 0 0 10px;
+        font-size: 20px;
+    }
+
+    #reader {
+        width: 100%;
+        max-width: 500px;
+        margin: auto;
+    }
+
+    .scan-message {
+        text-align: center;
+        color: #666;
+        margin-top: 8px;
+    }
+
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        padding: 12px 0;
+        font-size: 18px;
+    }
+
+    .cart-item:last-child {
+        border-bottom: none;
+    }
+
+    .delete-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 16px;
+    }
+
+    .total {
+        background: #111827;
+        color: white;
+        padding: 18px;
+        border-radius: 10px;
+        text-align: right;
+        font-size: 34px;
+        font-weight: bold;
+    }
+
+    .label {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    #received {
+        width: 100%;
+        font-size: 32px;
+        padding: 15px;
+        text-align: right;
+        border: 2px solid #aaa;
+        border-radius: 10px;
+        background: white;
+    }
+
+    .keypad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .keypad button {
+        height: 65px;
+        font-size: 26px;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        background: #e5e7eb;
+    }
+
+    .keypad button:active {
+        background: #cbd5e1;
+    }
+
+    .clear {
+        background: #f59e0b !important;
+        color: white;
+    }
+
+    .pay-btn {
+        width: 100%;
+        margin-top: 12px;
+        padding: 18px;
+        font-size: 26px;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        background: #16a34a;
+        color: white;
+    }
+
+    .pay-btn:active {
+        background: #15803d;
+    }
+
+    .change {
+        display: none;
+        text-align: center;
+        background: #dcfce7;
+        border: 3px solid #16a34a;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 12px;
+    }
+
+    .change-title {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .change-money {
+        font-size: 48px;
+        font-weight: bold;
+        color: #15803d;
+        margin-top: 8px;
+    }
+
+    .error {
+        color: #dc2626;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .reset-btn {
+        width: 100%;
+        padding: 15px;
+        background: #374151;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 20px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    🛒 研修用レジ
+</div>
+
+<div class="container">
+
+    <!-- QR読み取り -->
+    <div class="panel">
+        <h2>① 商品をスキャン</h2>
+
+        <div id="reader"></div>
+
+        <div class="scan-message">
+            QRコードをカメラに映してください
+        </div>
+
+        <div id="scanError" class="error"></div>
+    </div>
+
+    <!-- 商品一覧 -->
+    <div class="panel">
+        <h2>② 商品一覧</h2>
+
+        <div id="cart">
+            <div style="text-align:center;color:#777;">
+                商品がありません
+            </div>
+        </div>
+    </div>
+
+    <!-- 合計 -->
+    <div class="panel">
+        <div class="label">合計金額</div>
+
+        <div class="total">
+            ￥<span id="total">0</span>
+        </div>
+    </div>
+
+    <!-- 預かり金 -->
+    <div class="panel">
+        <h2>③ 預かり金額</h2>
+
+        <input
+            type="text"
+            id="received"
+            value="0"
+            readonly
+        >
+
+        <div class="keypad">
+
+            <button onclick="pressKey('1')">1</button>
+            <button onclick="pressKey('2')">2</button>
+            <button onclick="pressKey('3')">3</button>
+
+            <button onclick="pressKey('4')">4</button>
+            <button onclick="pressKey('5')">5</button>
+            <button onclick="pressKey('6')">6</button>
+
+            <button onclick="pressKey('7')">7</button>
+            <button onclick="pressKey('8')">8</button>
+            <button onclick="pressKey('9')">9</button>
+
+            <button onclick="pressKey('0')">0</button>
+            <button onclick="pressKey('00')">00</button>
+            <button class="clear" onclick="clearReceived()">C</button>
+
+        </div>
+
+        <button class="pay-btn" onclick="calculateChange()">
+            お会計
+        </button>
+
+        <div id="paymentError" class="error"></div>
+
+        <div id="changeArea" class="change">
+            <div class="change-title">
+                おつり
+            </div>
+
+            <div class="change-money">
+                ￥<span id="change">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- リセット -->
+    <div class="panel">
+        <button class="reset-btn" onclick="resetRegister()">
+            新しいお会計
+        </button>
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+     * ==========================================
+     * 商品マスタ
+     * ==========================================
+     *
+     * QRコードに以下の文字を入れると商品として認識します。
+     *
+     * A001
+     * A002
+     * A003
+     *
+     */
+
+    const products = {
+
+        "A001": {
+            name: "研修商品A",
+            price: 1000
+        },
+
+        "A002": {
+            name: "研修商品B",
+            price: 1500
+        },
+
+        "A003": {
+            name: "研修商品C",
+            price: 500
+        },
+
+        "A004": {
+            name: "研修商品D",
+            price: 2500
+        }
+
+    };
+
+
+    let cart = [];
+
+
+    /*
+     * QRコード読み取り成功
+     */
+    function onScanSuccess(decodedText) {
+
+        const code = decodedText.trim();
+
+        if (products[code]) {
+
+            addProduct(code);
+
+            document.getElementById("scanError").textContent = "";
+
+        } else {
+
+            document.getElementById("scanError").textContent =
+                "登録されていない商品です：" + code;
+
+        }
+
+    }
+
+
+    /*
+     * 商品追加
+     */
+    function addProduct(code) {
+
+        const product = products[code];
+
+        cart.push({
+            code: code,
+            name: product.name,
+            price: product.price
+        });
+
+        updateCart();
+
+        // 読み取り後に少し待ってから再スキャン
+        setTimeout(() => {
+
+            scanner.resume();
+
+        }, 500);
+
+    }
+
+
+    /*
+     * 商品一覧更新
+     */
+    function updateCart() {
+
+        const cartElement =
+            document.getElementById("cart");
+
+        if (cart.length === 0) {
+
+            cartElement.innerHTML =
+                '<div style="text-align:center;color:#777;">商品がありません</div>';
+
+            document.getElementById("total").textContent = "0";
+
+            return;
+        }
+
+
+        let html = "";
+        let total = 0;
+
+
+        cart.forEach((item, index) => {
+
+            total += item.price;
+
+            html += `
+                <div class="cart-item">
+
+                    <div>
+                        <strong>${item.name}</strong><br>
+                        <small>${item.code}</small>
+                    </div>
+
+                    <div>
+                        ￥${item.price.toLocaleString()}
+                        <button
+                            class="delete-btn"
+                            onclick="deleteProduct(${index})">
+                            削除
+                        </button>
+                    </div>
+
+                </div>
+            `;
+
+        });
+
+
+        cartElement.innerHTML = html;
+
+        document.getElementById("total").textContent =
+            total.toLocaleString();
+
+    }
+
+
+    /*
+     * 商品削除
+     */
+    function deleteProduct(index) {
+
+        cart.splice(index, 1);
+
+        updateCart();
+
+    }
+
+
+    /*
+     * 預かり金テンキー
+     */
+    function pressKey(key) {
+
+        const input =
+            document.getElementById("received");
+
+        let value = input.value;
+
+        if (value === "0") {
+            value = "";
+        }
+
+        value += key;
+
+        // 数字以外を除外
+        value = value.replace(/\D/g, "");
+
+        // 桁数制限
+        if (value.length > 8) {
+            value = value.substring(0, 8);
+        }
+
+        input.value = value || "0";
+
+    }
+
+
+    /*
+     * 預かり金クリア
+     */
+    function clearReceived() {
+
+        document.getElementById("received").value = "0";
+
+        document.getElementById("paymentError").textContent = "";
+
+        document.getElementById("changeArea").style.display = "none";
+
+    }
+
+
+    /*
+     * おつり計算
+     */
+    function calculateChange() {
+
+        const total =
+            cart.reduce((sum, item) => sum + item.price, 0);
+
+        const received =
+            Number(document.getElementById("received").value);
+
+
+        const error =
+            document.getElementById("paymentError");
+
+        const changeArea =
+            document.getElementById("changeArea");
+
+
+        error.textContent = "";
+
+        changeArea.style.display = "none";
+
+
+        if (cart.length === 0) {
+
+            error.textContent =
+                "商品をスキャンしてください。";
+
+            return;
+
+        }
+
+
+        if (received < total) {
+
+            error.textContent =
+                "預かり金額が不足しています。";
+
+            return;
+
+        }
+
+
+        const change = received - total;
+
+
+        document.getElementById("change").textContent =
+            change.toLocaleString();
+
+
+        changeArea.style.display = "block";
+
+    }
+
+
+    /*
+     * 新しい会計
+     */
+    function resetRegister() {
+
+        cart = [];
+
+        document.getElementById("received").value = "0";
+
+        document.getElementById("paymentError").textContent = "";
+
+        document.getElementById("scanError").textContent = "";
+
+        document.getElementById("changeArea").style.display = "none";
+
+        updateCart();
+
+    }
+
+
+    /*
+     * QRスキャナー起動
+     */
+    const scanner = new Html5Qrcode("reader");
+
+
+    scanner.start(
+
+        { facingMode: "environment" },
+
+        {
+            fps: 10,
+            qrbox: {
+                width: 250,
+                height: 250
+            }
+        },
+
+        onScanSuccess,
+
+        function(errorMessage) {
+            // 読み取り中のエラーなので何もしない
+        }
+
+    ).catch(function(error) {
+
+        document.getElementById("scanError").textContent =
+            "カメラを起動できませんでした。カメラの使用を許可してください。";
+
+    });
+
+</script>
+
+</body>
+</html>
