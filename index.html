@@ -1,609 +1,3120 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
 
-<title>研修用レジ</title>
+<title>研修用セルフレジ</title>
 
+
+<!-- QR・バーコード読み取り -->
 <script src="https://unpkg.com/html5-qrcode"></script>
 
+<!-- QRコード作成 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- JANバーコード作成 -->
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+
+
 <style>
-    * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-    }
+
+/* ==================================================
+   基本設定
+================================================== */
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Helvetica Neue",
+        "Hiragino Kaku Gothic ProN",
+        Meiryo,
+        sans-serif;
+
+    background: #eeeeee;
+    color: #333;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.app {
+    min-height: 100vh;
+}
+
+
+/* ==================================================
+   上部ステップ
+================================================== */
+
+.steps {
+
+    width: 100%;
+    height: 68px;
+
+    display: flex;
+
+    background: #ffffff;
+
+    border-bottom:
+        1px solid #cccccc;
+
+}
+
+.step {
+
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    color: #888888;
+
+}
+
+.step.active {
+
+    color: #1685b8;
+
+}
+
+.step.active::after {
+
+    content: "";
+
+    position: absolute;
+
+    bottom: 0;
+    left: 10%;
+    width: 80%;
+
+    height: 5px;
+
+    background: #1685b8;
+
+}
+
+.step-number {
+
+    width: 32px;
+    height: 32px;
+
+    margin-right: 8px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #dddddd;
+
+    color: #666666;
+
+}
+
+.step.active .step-number {
+
+    background: #1685b8;
+    color: white;
+
+}
+
+
+/* ==================================================
+   画面
+================================================== */
+
+.screen {
+
+    display: none;
+
+    min-height:
+        calc(100vh - 68px);
+
+    padding: 18px;
+
+}
+
+.screen.active {
+
+    display: block;
+
+}
+
+
+/* ==================================================
+   タイトル
+================================================== */
+
+.title {
+
+    text-align: center;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    margin:
+        5px 0 20px;
+
+}
+
+
+/* ==================================================
+   カード
+================================================== */
+
+.card {
+
+    background: white;
+
+    border:
+        1px solid #cccccc;
+
+    border-radius: 9px;
+
+    padding: 18px;
+
+}
+
+
+/* ==================================================
+   スキャン画面
+================================================== */
+
+.scan-layout {
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 18px;
+
+}
+
+.card-title {
+
+    font-size: 21px;
+
+    font-weight: bold;
+
+    margin-bottom: 12px;
+
+}
+
+
+/* カメラ */
+
+#reader {
+
+    width: 100%;
+
+    max-width: 500px;
+
+    margin: auto;
+
+}
+
+.scan-message {
+
+    text-align: center;
+
+    margin-top: 12px;
+
+    font-size: 17px;
+
+    color: #666;
+
+}
+
+.scan-message strong {
+
+    color: #1685b8;
+
+}
+
+
+/* エラー */
+
+.error {
+
+    margin-top: 10px;
+
+    text-align: center;
+
+    color: #d00000;
+
+    font-weight: bold;
+
+}
+
+
+/* ==================================================
+   商品一覧
+================================================== */
+
+.cart {
+
+    max-height: 48vh;
+
+    overflow-y: auto;
+
+}
+
+.empty {
+
+    text-align: center;
+
+    padding: 40px 10px;
+
+    color: #888;
+
+}
+
+.product-row {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        60px
+        120px
+        70px;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 13px 0;
+
+    border-bottom:
+        1px solid #dddddd;
+
+}
+
+.product-name {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+}
+
+.product-code {
+
+    color: #888;
+
+    font-size: 12px;
+
+    margin-top: 3px;
+
+}
+
+.qty {
+
+    text-align: center;
+
+    font-size: 19px;
+
+}
+
+.price {
+
+    text-align: right;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+}
+
+.remove {
+
+    border: 0;
+
+    border-radius: 6px;
+
+    padding: 8px 5px;
+
+    background: #eeeeee;
+
+}
+
+
+/* ==================================================
+   合計
+================================================== */
+
+.total-box {
+
+    max-width: 1100px;
+
+    margin:
+        15px auto 0;
+
+    padding:
+        16px 22px;
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    background: white;
+
+    border:
+        1px solid #cccccc;
+
+    border-radius: 8px;
+
+}
+
+.total-count {
+
+    font-size: 21px;
+
+}
+
+.total-price {
+
+    font-size: 38px;
+
+    font-weight: bold;
+
+}
+
+
+/* ==================================================
+   ボタン
+================================================== */
+
+.button {
+
+    min-height: 64px;
+
+    padding:
+        10px 22px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+}
+
+.button-blue {
+
+    background: #1685b8;
+
+    color: white;
+
+}
+
+.button-green {
+
+    background: #159447;
+
+    color: white;
+
+}
+
+.button-gray {
+
+    background: #e5e5e5;
+
+    color: #333;
+
+}
+
+.button-red {
+
+    background: #d33c3c;
+
+    color: white;
+
+}
+
+.bottom-buttons {
+
+    max-width: 1100px;
+
+    margin:
+        15px auto 0;
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    gap: 15px;
+
+}
+
+.bottom-buttons .button {
+
+    min-width: 170px;
+
+}
+
+
+/* ==================================================
+   支払い方法
+================================================== */
+
+.payment-layout {
+
+    max-width: 900px;
+
+    margin: auto;
+
+}
+
+.payment-total {
+
+    background: white;
+
+    border:
+        1px solid #cccccc;
+
+    border-radius: 8px;
+
+    text-align: center;
+
+    padding: 20px;
+
+    margin-bottom: 20px;
+
+}
+
+.payment-total-label {
+
+    font-size: 18px;
+
+}
+
+.payment-total-price {
+
+    font-size: 42px;
+
+    font-weight: bold;
+
+    margin-top: 5px;
+
+}
+
+.payment-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 14px;
+
+}
+
+.payment-button {
+
+    min-height: 135px;
+
+    background: white;
+
+    border:
+        3px solid #d27b54;
+
+    border-radius: 10px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    color: #333;
+
+}
+
+.payment-button:active {
+
+    background: #fff3ec;
+
+}
+
+.payment-icon {
+
+    display: block;
+
+    font-size: 42px;
+
+    margin-bottom: 7px;
+
+}
+
+
+/* ==================================================
+   現金
+================================================== */
+
+.cash-layout {
+
+    max-width: 600px;
+
+    margin: auto;
+
+}
+
+.cash-box {
+
+    background: white;
+
+    border:
+        1px solid #cccccc;
+
+    border-radius: 8px;
+
+    padding: 20px;
+
+}
+
+.cash-row {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    font-size: 21px;
+
+    padding: 7px 0;
+
+}
+
+.cash-total {
+
+    font-size: 31px;
+
+    font-weight: bold;
+
+}
+
+.received {
+
+    margin-top: 15px;
+
+}
+
+.received-label {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+
+}
+
+.received-display {
+
+    width: 100%;
+
+    height: 72px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    padding:
+        8px 15px;
+
+    border:
+        2px solid #999999;
+
+    border-radius: 7px;
+
+    background: #f8f8f8;
+
+    font-size: 36px;
+
+    font-weight: bold;
+
+}
+
+.keypad {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+    margin-top: 12px;
+
+}
+
+.key {
+
+    height: 68px;
+
+    border:
+        1px solid #aaaaaa;
+
+    border-radius: 7px;
+
+    background: white;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+}
+
+.key:active {
+
+    background: #dddddd;
+
+}
+
+.key-clear {
+
+    background: #eeeeee;
+
+}
+
+.cash-pay {
+
+    width: 100%;
+
+    margin-top: 12px;
+
+}
+
+
+/* ==================================================
+   完了画面
+================================================== */
+
+.result-box {
+
+    max-width: 650px;
+
+    margin:
+        20px auto;
+
+    padding: 25px;
+
+    background: white;
+
+    border:
+        3px solid #159447;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+}
+
+.result-title {
+
+    font-size: 25px;
+
+    font-weight: bold;
+
+}
+
+.result-change {
+
+    margin:
+        10px 0;
+
+    color: #159447;
+
+    font-size: 58px;
+
+    font-weight: bold;
+
+}
+
+.result-message {
+
+    font-size: 20px;
+
+}
+
+.complete-buttons {
+
+    max-width: 650px;
+
+    margin: auto;
+
+}
+
+
+/* ==================================================
+   商品ラベル画面
+================================================== */
+
+.labels-screen {
+
+    display: none;
+
+    min-height: 100vh;
+
+    padding: 20px;
+
+    background: #eeeeee;
+
+}
+
+.labels-screen.active {
+
+    display: block;
+
+}
+
+.labels-header {
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+
+}
+
+.labels-title {
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+}
+
+.labels-grid {
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 15px;
+
+}
+
+.product-label {
+
+    min-height: 310px;
+
+    padding: 15px;
+
+    background: white;
+
+    border:
+        2px solid #333;
+
+    border-radius: 6px;
+
+    text-align: center;
+
+    break-inside: avoid;
+
+}
+
+.label-name {
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    margin-bottom: 5px;
+
+}
+
+.label-price {
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+
+}
+
+.label-code {
+
+    font-size: 15px;
+
+    color: #555;
+
+    margin-bottom: 8px;
+
+}
+
+.label-qr {
+
+    display: flex;
+
+    justify-content: center;
+
+    margin: 5px auto;
+
+}
+
+.label-barcode {
+
+    width: 90%;
+
+    max-width: 350px;
+
+    height: 70px;
+
+}
+
+.label-jan {
+
+    font-size: 14px;
+
+    letter-spacing: 2px;
+
+}
+
+
+/* ==================================================
+   印刷
+================================================== */
+
+@media print {
 
     body {
-        margin: 0;
-        background: #eeeeee;
-        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
-                     "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-        color: #222;
-    }
 
-    .header {
-        background: #1f2937;
-        color: white;
-        padding: 15px;
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-    }
-
-    .container {
-        max-width: 700px;
-        margin: auto;
-        padding: 12px;
-    }
-
-    .panel {
         background: white;
-        border-radius: 12px;
-        padding: 15px;
-        margin-bottom: 12px;
-        box-shadow: 0 2px 6px rgba(0,0,0,.12);
+
     }
 
-    h2 {
-        margin: 0 0 10px;
-        font-size: 20px;
-    }
+    .labels-header {
 
-    #reader {
-        width: 100%;
-        max-width: 500px;
-        margin: auto;
-    }
-
-    .scan-message {
-        text-align: center;
-        color: #666;
-        margin-top: 8px;
-    }
-
-    .cart-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #ddd;
-        padding: 12px 0;
-        font-size: 18px;
-    }
-
-    .cart-item:last-child {
-        border-bottom: none;
-    }
-
-    .delete-btn {
-        background: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 12px;
-        font-size: 16px;
-    }
-
-    .total {
-        background: #111827;
-        color: white;
-        padding: 18px;
-        border-radius: 10px;
-        text-align: right;
-        font-size: 34px;
-        font-weight: bold;
-    }
-
-    .label {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
-
-    #received {
-        width: 100%;
-        font-size: 32px;
-        padding: 15px;
-        text-align: right;
-        border: 2px solid #aaa;
-        border-radius: 10px;
-        background: white;
-    }
-
-    .keypad {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-        margin-top: 10px;
-    }
-
-    .keypad button {
-        height: 65px;
-        font-size: 26px;
-        font-weight: bold;
-        border: none;
-        border-radius: 10px;
-        background: #e5e7eb;
-    }
-
-    .keypad button:active {
-        background: #cbd5e1;
-    }
-
-    .clear {
-        background: #f59e0b !important;
-        color: white;
-    }
-
-    .pay-btn {
-        width: 100%;
-        margin-top: 12px;
-        padding: 18px;
-        font-size: 26px;
-        font-weight: bold;
-        border: none;
-        border-radius: 10px;
-        background: #16a34a;
-        color: white;
-    }
-
-    .pay-btn:active {
-        background: #15803d;
-    }
-
-    .change {
         display: none;
-        text-align: center;
-        background: #dcfce7;
-        border: 3px solid #16a34a;
-        border-radius: 12px;
-        padding: 20px;
-        margin-top: 12px;
+
     }
 
-    .change-title {
-        font-size: 22px;
-        font-weight: bold;
+    .labels-screen {
+
+        display: block;
+
+        padding: 0;
+
     }
 
-    .change-money {
-        font-size: 48px;
-        font-weight: bold;
-        color: #15803d;
-        margin-top: 8px;
+    .labels-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 8px;
+
     }
 
-    .error {
-        color: #dc2626;
-        font-weight: bold;
-        text-align: center;
-        margin-top: 10px;
+    .product-label {
+
+        page-break-inside: avoid;
+
     }
 
-    .reset-btn {
+}
+
+
+/* ==================================================
+   タブレット・スマホ
+================================================== */
+
+@media (max-width: 750px) {
+
+    .step {
+
+        font-size: 13px;
+
+    }
+
+    .step-number {
+
+        width: 25px;
+        height: 25px;
+
+        margin-right: 4px;
+
+    }
+
+    .scan-layout {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .payment-grid {
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+    .product-row {
+
+        grid-template-columns:
+            1fr
+            45px
+            90px;
+
+    }
+
+    .product-row .remove {
+
+        display: none;
+
+    }
+
+    .total-price {
+
+        font-size: 30px;
+
+    }
+
+    .bottom-buttons {
+
+        flex-direction: column;
+
+    }
+
+    .bottom-buttons .button {
+
         width: 100%;
-        padding: 15px;
-        background: #374151;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        font-size: 20px;
+
     }
+
+    .labels-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
 </style>
+
 </head>
+
 
 <body>
 
-<div class="header">
-    🛒 研修用レジ
+
+<div class="app">
+
+
+<!-- =================================================
+     上部ステップ
+================================================== -->
+
+<div class="steps">
+
+    <div id="step1"
+         class="step active">
+
+        <span class="step-number">
+            1
+        </span>
+
+        商品スキャン
+
+    </div>
+
+
+    <div id="step2"
+         class="step">
+
+        <span class="step-number">
+            2
+        </span>
+
+        お支払い
+
+    </div>
+
+
+    <div id="step3"
+         class="step">
+
+        <span class="step-number">
+            3
+        </span>
+
+        完了
+
+    </div>
+
 </div>
 
-<div class="container">
 
-    <!-- QR読み取り -->
-    <div class="panel">
-        <h2>① 商品をスキャン</h2>
+<!-- =================================================
+     商品スキャン
+================================================== -->
 
-        <div id="reader"></div>
+<section id="screenScan"
+         class="screen active">
 
-        <div class="scan-message">
-            QRコードをカメラに映してください
-        </div>
 
-        <div id="scanError" class="error"></div>
+    <div class="title">
+
+        商品をスキャンしてください
+
     </div>
 
-    <!-- 商品一覧 -->
-    <div class="panel">
-        <h2>② 商品一覧</h2>
 
-        <div id="cart">
-            <div style="text-align:center;color:#777;">
-                商品がありません
+    <div class="scan-layout">
+
+
+        <!-- カメラ -->
+
+        <div class="card">
+
+            <div class="card-title">
+
+                バーコードをスキャン
+
             </div>
+
+
+            <div id="reader"></div>
+
+
+            <div class="scan-message">
+
+                <strong>
+                    QRコード・JANコード対応
+                </strong>
+
+                <br>
+
+                商品のコードを
+                カメラに向けてください
+
+            </div>
+
+
+            <div id="scanError"
+                 class="error">
+
+            </div>
+
         </div>
+
+
+        <!-- 商品一覧 -->
+
+        <div class="card">
+
+            <div class="card-title">
+
+                お買い上げ商品
+
+            </div>
+
+
+            <div id="cart"
+                 class="cart">
+
+                <div class="empty">
+
+                    商品をスキャンしてください
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
+
 
     <!-- 合計 -->
-    <div class="panel">
-        <div class="label">合計金額</div>
 
-        <div class="total">
-            ￥<span id="total">0</span>
+    <div class="total-box">
+
+        <div class="total-count">
+
+            合計
+
+            <strong id="totalCount">
+                0
+            </strong>
+
+            点
+
         </div>
+
+
+        <div class="total-price">
+
+            ￥<span id="total">
+                0
+            </span>
+
+        </div>
+
     </div>
 
-    <!-- 預かり金 -->
-    <div class="panel">
-        <h2>③ 預かり金額</h2>
 
-        <input
-            type="text"
-            id="received"
-            value="0"
-            readonly
-        >
+    <!-- ボタン -->
 
-        <div class="keypad">
+    <div class="bottom-buttons">
 
-            <button onclick="pressKey('1')">1</button>
-            <button onclick="pressKey('2')">2</button>
-            <button onclick="pressKey('3')">3</button>
+        <button
+            class="button button-gray"
+            onclick="clearCart()">
 
-            <button onclick="pressKey('4')">4</button>
-            <button onclick="pressKey('5')">5</button>
-            <button onclick="pressKey('6')">6</button>
+            商品を全部削除
 
-            <button onclick="pressKey('7')">7</button>
-            <button onclick="pressKey('8')">8</button>
-            <button onclick="pressKey('9')">9</button>
-
-            <button onclick="pressKey('0')">0</button>
-            <button onclick="pressKey('00')">00</button>
-            <button class="clear" onclick="clearReceived()">C</button>
-
-        </div>
-
-        <button class="pay-btn" onclick="calculateChange()">
-            お会計
         </button>
 
-        <div id="paymentError" class="error"></div>
 
-        <div id="changeArea" class="change">
-            <div class="change-title">
-                おつり
-            </div>
+        <button
+            class="button button-blue"
+            onclick="goPayment()">
 
-            <div class="change-money">
-                ￥<span id="change">0</span>
-            </div>
-        </div>
-    </div>
+            お支払いへ
 
-    <!-- リセット -->
-    <div class="panel">
-        <button class="reset-btn" onclick="resetRegister()">
-            新しいお会計
         </button>
+
     </div>
+
+
+    <div class="bottom-buttons">
+
+        <button
+            class="button button-gray"
+            onclick="showLabels()">
+
+            商品カードを表示・印刷
+
+        </button>
+
+    </div>
+
+
+</section>
+
+
+<!-- =================================================
+     支払い方法
+================================================== -->
+
+<section id="screenPayment"
+         class="screen">
+
+
+    <div class="title">
+
+        お支払い方法を選択してください
+
+    </div>
+
+
+    <div class="payment-layout">
+
+
+        <div class="payment-total">
+
+            <div class="payment-total-label">
+
+                お買い上げ金額
+
+            </div>
+
+
+            <div class="payment-total-price">
+
+                ￥<span id="paymentTotal">
+                    0
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="payment-grid">
+
+
+            <!-- 現金 -->
+
+            <button
+                class="payment-button"
+                onclick="selectPayment('cash')">
+
+                <span class="payment-icon">
+                    💴
+                </span>
+
+                現金
+
+            </button>
+
+
+            <!-- クレジット -->
+
+            <button
+                class="payment-button"
+                onclick="selectPayment('credit')">
+
+                <span class="payment-icon">
+                    💳
+                </span>
+
+                クレジットカード
+
+            </button>
+
+
+            <!-- 電子マネー -->
+
+            <button
+                class="payment-button"
+                onclick="selectPayment('electronic')">
+
+                <span class="payment-icon">
+                    📱
+                </span>
+
+                電子マネー
+
+            </button>
+
+
+            <!-- その他 -->
+
+            <button
+                class="payment-button"
+                onclick="selectPayment('other')">
+
+                <span class="payment-icon">
+                    🔵
+                </span>
+
+                その他
+
+            </button>
+
+
+        </div>
+
+
+        <div class="bottom-buttons">
+
+            <button
+                class="button button-gray"
+                onclick="showScreen('scan')">
+
+                戻る
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =================================================
+     現金
+================================================== -->
+
+<section id="screenCash"
+         class="screen">
+
+
+    <div class="title">
+
+        現金でお支払い
+
+    </div>
+
+
+    <div class="cash-layout">
+
+
+        <div class="cash-box">
+
+
+            <div class="cash-row">
+
+                <span>
+                    合計
+                </span>
+
+
+                <span class="cash-total">
+
+                    ￥<span id="cashTotal">
+                        0
+                    </span>
+
+                </span>
+
+            </div>
+
+
+            <div class="received">
+
+
+                <div class="received-label">
+
+                    お預かり金額
+
+                </div>
+
+
+                <div id="received"
+                     class="received-display">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <!-- テンキー -->
+
+            <div class="keypad">
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('1')">
+
+                    1
+
+                </button>
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('2')">
+
+                    2
+
+                </button>
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('3')">
+
+                    3
+
+                </button>
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('4')">
+
+                    4
+
+                </button>
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('5')">
+
+                    5
+
+                </button>
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('6')">
+
+                    6
+
+                </button>
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('7')">
+
+                    7
+
+                </button>
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('8')">
+
+                    8
+
+                </button>
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('9')">
+
+                    9
+
+                </button>
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('0')">
+
+                    0
+
+                </button>
+
+
+                <button
+                    class="key"
+                    onclick="keyPress('00')">
+
+                    00
+
+                </button>
+
+
+                <button
+                    class="key key-clear"
+                    onclick="clearReceived()">
+
+                    訂正
+
+                </button>
+
+
+            </div>
+
+
+            <div id="cashError"
+                 class="error">
+
+            </div>
+
+
+            <button
+                class="button button-green cash-pay"
+                onclick="payCash()">
+
+                お支払い
+
+            </button>
+
+
+            <button
+                class="button button-gray cash-pay"
+                onclick="showScreen('payment')">
+
+                戻る
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =================================================
+     完了
+================================================== -->
+
+<section id="screenComplete"
+         class="screen">
+
+
+    <div class="title">
+
+        お支払い完了
+
+    </div>
+
+
+    <div class="result-box">
+
+
+        <div class="result-title">
+
+            お支払いありがとうございます
+
+        </div>
+
+
+        <div style="margin-top:20px;">
+
+            お買い上げ金額
+
+        </div>
+
+
+        <div style="
+            font-size:30px;
+            font-weight:bold;
+        ">
+
+            ￥<span id="completeTotal">
+                0
+            </span>
+
+        </div>
+
+
+        <div style="margin-top:15px;">
+
+            お預かり
+
+        </div>
+
+
+        <div style="
+            font-size:30px;
+            font-weight:bold;
+        ">
+
+            ￥<span id="completeReceived">
+                0
+            </span>
+
+        </div>
+
+
+        <div style="margin-top:20px;">
+
+            おつり
+
+        </div>
+
+
+        <div class="result-change">
+
+            ￥<span id="change">
+                0
+            </span>
+
+        </div>
+
+
+        <div class="result-message">
+
+            おつりをお受け取りください
+
+        </div>
+
+    </div>
+
+
+    <div class="complete-buttons">
+
+
+        <button
+            class="button button-blue"
+            style="width:100%;"
+            onclick="newCustomer()">
+
+            次のお客様へ
+
+        </button>
+
+
+    </div>
+
+</section>
+
 
 </div>
+
+
+<!-- =================================================
+     商品ラベル画面
+================================================== -->
+
+<section id="labelsScreen"
+         class="labels-screen">
+
+
+    <div class="labels-header">
+
+
+        <div class="labels-title">
+
+            研修用 商品カード
+
+        </div>
+
+
+        <div>
+
+            <button
+                class="button button-blue"
+                onclick="window.print()">
+
+                印刷する
+
+            </button>
+
+
+            <button
+                class="button button-gray"
+                onclick="hideLabels()">
+
+                戻る
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div id="labelsGrid"
+         class="labels-grid">
+
+    </div>
+
+
+</section>
 
 
 <script>
 
+/* ==========================================================
+   商品マスタ
+==========================================================
+
+   QRコードには A001 などを入れます。
+
+   JANコードには下記の13桁を使用します。
+
+   ※すべて研修用の架空JANコードです。
+========================================================== */
+
+const products = {
+
+    "A001": {
+
+        name: "しゃけのおにぎり",
+
+        price: 198,
+
+        jan: "4900000000016"
+
+    },
+
+
+    "A002": {
+
+        name: "おーいお茶",
+
+        price: 147,
+
+        jan: "4900000000023"
+
+    },
+
+
+    "A003": {
+
+        name: "からあげくん",
+
+        price: 320,
+
+        jan: "4900000000030"
+
+    },
+
+
+    "A004": {
+
+        name: "大福",
+
+        price: 224,
+
+        jan: "4900000000047"
+
+    },
+
+
+    "A005": {
+
+        name: "ポテトチップス",
+
+        price: 298,
+
+        jan: "4900000000054"
+
+    },
+
+
+    "A006": {
+
+        name: "洗濯用洗剤（詰め替え用）",
+
+        price: 498,
+
+        jan: "4900000000061"
+
+    },
+
+
+    "A007": {
+
+        name: "コーラ",
+
+        price: 150,
+
+        jan: "4900000000078"
+
+    },
+
+
+    "A008": {
+
+        name: "ガリガリ君",
+
+        price: 92,
+
+        jan: "4900000000085"
+
+    },
+
+
+    "A009": {
+
+        name: "カップヌードル",
+
+        price: 250,
+
+        jan: "4900000000092"
+
+    },
+
+
+    "A010": {
+
+        name: "チョコレート",
+
+        price: 198,
+
+        jan: "4900000000106"
+
+    }
+
+    "A011": {
+
+    name: "袋",
+
+    price: 5,
+
+    jan: "4900000000113"
+
+}
+
+};
+
+
+/* ==========================================================
+   変数
+========================================================== */
+
+let cart = [];
+
+let received = "0";
+
+let scanner = null;
+
+let lastScan = "";
+
+let lastScanTime = 0;
+
+
+/* ==========================================================
+   商品検索
+
+   QRなら A001
+
+   JANなら 4900000000016
+
+   どちらでも同じ商品を返します。
+========================================================== */
+
+function findProduct(code) {
+
+
+    code = code.trim();
+
+
+    /* QRコード */
+
+    if (products[code]) {
+
+        return {
+
+            code: code,
+
+            product: products[code]
+
+        };
+
+    }
+
+
+    /* JANコード */
+
+    for (
+        const qrCode in products
+    ) {
+
+
+        if (
+            products[qrCode].jan === code
+        ) {
+
+            return {
+
+                code: qrCode,
+
+                product: products[qrCode]
+
+            };
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* ==========================================================
+   合計金額
+========================================================== */
+
+function getTotal() {
+
+
+    return cart.reduce(
+
+        function(sum, item) {
+
+            return sum +
+                item.price *
+                item.quantity;
+
+        },
+
+        0
+
+    );
+
+}
+
+
+/* ==========================================================
+   合計点数
+========================================================== */
+
+function getCount() {
+
+
+    return cart.reduce(
+
+        function(sum, item) {
+
+            return sum +
+                item.quantity;
+
+        },
+
+        0
+
+    );
+
+}
+
+
+/* ==========================================================
+   商品追加
+========================================================== */
+
+function addProduct(code) {
+
+
+    const product =
+        products[code];
+
+
+    if (!product) {
+
+        return;
+
+    }
+
+
+    const existing =
+        cart.find(
+
+            function(item) {
+
+                return item.code === code;
+
+            }
+
+        );
+
+
+    if (existing) {
+
+
+        existing.quantity++;
+
+
+    } else {
+
+
+        cart.push({
+
+            code: code,
+
+            name:
+                product.name,
+
+            price:
+                product.price,
+
+            quantity: 1
+
+        });
+
+    }
+
+
+    updateCart();
+
+}
+
+
+/* ==========================================================
+   商品一覧更新
+========================================================== */
+
+function updateCart() {
+
+
+    const element =
+        document.getElementById(
+            "cart"
+        );
+
+
+    if (cart.length === 0) {
+
+
+        element.innerHTML = `
+
+            <div class="empty">
+
+                商品をスキャンしてください
+
+            </div>
+
+        `;
+
+
+    } else {
+
+
+        let html = "";
+
+
+        cart.forEach(
+
+            function(item, index) {
+
+
+                const subtotal =
+                    item.price *
+                    item.quantity;
+
+
+                html += `
+
+                    <div class="product-row">
+
+
+                        <div>
+
+                            <div class="product-name">
+
+                                ${escapeHtml(item.name)}
+
+                            </div>
+
+
+                            <div class="product-code">
+
+                                ${item.code}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="qty">
+
+                            ${item.quantity}
+
+                        </div>
+
+
+                        <div class="price">
+
+                            ￥${subtotal.toLocaleString()}
+
+                        </div>
+
+
+                        <button
+                            class="remove"
+                            onclick="removeItem(${index})">
+
+                            削除
+
+                        </button>
+
+
+                    </div>
+
+                `;
+
+            }
+
+        );
+
+
+        element.innerHTML =
+            html;
+
+    }
+
+
+    document.getElementById(
+        "total"
+    ).textContent =
+        getTotal().toLocaleString();
+
+
+    document.getElementById(
+        "totalCount"
+    ).textContent =
+        getCount();
+
+}
+
+
+/* ==========================================================
+   HTMLエスケープ
+========================================================== */
+
+function escapeHtml(text) {
+
+
+    return String(text)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ==========================================================
+   商品1個削除
+========================================================== */
+
+function removeItem(index) {
+
+
+    cart.splice(
+        index,
+        1
+    );
+
+
+    updateCart();
+
+}
+
+
+/* ==========================================================
+   商品全部削除
+========================================================== */
+
+function clearCart() {
+
+
+    if (cart.length === 0) {
+
+        return;
+
+    }
+
+
+    if (
+        confirm(
+            "商品をすべて削除しますか？"
+        )
+    ) {
+
+        cart = [];
+
+        updateCart();
+
+    }
+
+}
+
+
+/* ==========================================================
+   支払い画面
+========================================================== */
+
+function goPayment() {
+
+
+    if (cart.length === 0) {
+
+
+        alert(
+            "商品をスキャンしてください。"
+        );
+
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "paymentTotal"
+    ).textContent =
+        getTotal().toLocaleString();
+
+
+    showScreen(
+        "payment"
+    );
+
+}
+
+
+/* ==========================================================
+   支払い方法
+========================================================== */
+
+function selectPayment(type) {
+
+
+    const total =
+        getTotal();
+
+
+    /* 現金 */
+
+    if (
+        type === "cash"
+    ) {
+
+
+        document.getElementById(
+            "cashTotal"
+        ).textContent =
+            total.toLocaleString();
+
+
+        received =
+            "0";
+
+
+        document.getElementById(
+            "received"
+        ).textContent =
+            "0";
+
+
+        document.getElementById(
+            "cashError"
+        ).textContent =
+            "";
+
+
+        showScreen(
+            "cash"
+        );
+
+
+        return;
+
+    }
+
+
     /*
-     * ==========================================
-     * 商品マスタ
-     * ==========================================
-     *
-     * QRコードに以下の文字を入れると商品として認識します。
-     *
-     * A001
-     * A002
-     * A003
-     *
+     * 現金以外は
+     * 研修用として即時完了
      */
 
-    const products = {
+    document.getElementById(
+        "completeTotal"
+    ).textContent =
+        total.toLocaleString();
 
-        "A001": {
-            name: "研修商品A",
-            price: 1000
-        },
 
-        "A002": {
-            name: "研修商品B",
-            price: 1500
-        },
+    document.getElementById(
+        "completeReceived"
+    ).textContent =
+        total.toLocaleString();
 
-        "A003": {
-            name: "研修商品C",
-            price: 500
-        },
 
-        "A004": {
-            name: "研修商品D",
-            price: 2500
-        }
+    document.getElementById(
+        "change"
+    ).textContent =
+        "0";
+
+
+    showScreen(
+        "complete"
+    );
+
+}
+
+
+/* ==========================================================
+   テンキー
+========================================================== */
+
+function keyPress(value) {
+
+
+    if (
+        received === "0"
+    ) {
+
+        received = "";
+
+    }
+
+
+    received += value;
+
+
+    /* 数字だけ */
+
+    received =
+        received.replace(
+            /\D/g,
+            ""
+        );
+
+
+    /* 最大8桁 */
+
+    if (
+        received.length > 8
+    ) {
+
+        received =
+            received.substring(
+                0,
+                8
+            );
+
+    }
+
+
+    document.getElementById(
+        "received"
+    ).textContent =
+
+        Number(
+            received || 0
+        ).toLocaleString();
+
+}
+
+
+/* ==========================================================
+   預かり金訂正
+========================================================== */
+
+function clearReceived() {
+
+
+    received =
+        "0";
+
+
+    document.getElementById(
+        "received"
+    ).textContent =
+        "0";
+
+
+    document.getElementById(
+        "cashError"
+    ).textContent =
+        "";
+
+}
+
+
+/* ==========================================================
+   現金会計
+========================================================== */
+
+function payCash() {
+
+
+    const total =
+        getTotal();
+
+
+    const money =
+        Number(
+            received
+        );
+
+
+    const error =
+        document.getElementById(
+            "cashError"
+        );
+
+
+    error.textContent =
+        "";
+
+
+    if (
+        money < total
+    ) {
+
+
+        const shortage =
+            total - money;
+
+
+        error.textContent =
+
+            "お預かり金額が " +
+
+            shortage.toLocaleString() +
+
+            "円不足しています。";
+
+
+        return;
+
+    }
+
+
+    const change =
+        money - total;
+
+
+    document.getElementById(
+        "completeTotal"
+    ).textContent =
+        total.toLocaleString();
+
+
+    document.getElementById(
+        "completeReceived"
+    ).textContent =
+        money.toLocaleString();
+
+
+    document.getElementById(
+        "change"
+    ).textContent =
+        change.toLocaleString();
+
+
+    showScreen(
+        "complete"
+    );
+
+}
+
+
+/* ==========================================================
+   画面切り替え
+========================================================== */
+
+function showScreen(name) {
+
+
+    const screens = {
+
+        scan:
+            "screenScan",
+
+        payment:
+            "screenPayment",
+
+        cash:
+            "screenCash",
+
+        complete:
+            "screenComplete"
 
     };
 
 
-    let cart = [];
+    Object.values(
+        screens
+    ).forEach(
 
+        function(id) {
 
-    /*
-     * QRコード読み取り成功
-     */
-    function onScanSuccess(decodedText) {
-
-        const code = decodedText.trim();
-
-        if (products[code]) {
-
-            addProduct(code);
-
-            document.getElementById("scanError").textContent = "";
-
-        } else {
-
-            document.getElementById("scanError").textContent =
-                "登録されていない商品です：" + code;
+            document
+                .getElementById(id)
+                .classList
+                .remove("active");
 
         }
 
-    }
+    );
 
 
-    /*
-     * 商品追加
-     */
-    function addProduct(code) {
-
-        const product = products[code];
-
-        cart.push({
-            code: code,
-            name: product.name,
-            price: product.price
-        });
-
-        updateCart();
-
-        // 読み取り後に少し待ってから再スキャン
-        setTimeout(() => {
-
-            scanner.resume();
-
-        }, 500);
-
-    }
+    document
+        .getElementById(
+            screens[name]
+        )
+        .classList
+        .add("active");
 
 
-    /*
-     * 商品一覧更新
-     */
-    function updateCart() {
+    updateSteps(
+        name
+    );
 
-        const cartElement =
-            document.getElementById("cart");
-
-        if (cart.length === 0) {
-
-            cartElement.innerHTML =
-                '<div style="text-align:center;color:#777;">商品がありません</div>';
-
-            document.getElementById("total").textContent = "0";
-
-            return;
-        }
+}
 
 
-        let html = "";
-        let total = 0;
+/* ==========================================================
+   ステップ表示
+========================================================== */
+
+function updateSteps(name) {
 
 
-        cart.forEach((item, index) => {
-
-            total += item.price;
-
-            html += `
-                <div class="cart-item">
-
-                    <div>
-                        <strong>${item.name}</strong><br>
-                        <small>${item.code}</small>
-                    </div>
-
-                    <div>
-                        ￥${item.price.toLocaleString()}
-                        <button
-                            class="delete-btn"
-                            onclick="deleteProduct(${index})">
-                            削除
-                        </button>
-                    </div>
-
-                </div>
-            `;
-
-        });
+    document
+        .getElementById("step1")
+        .classList
+        .remove("active");
 
 
-        cartElement.innerHTML = html;
+    document
+        .getElementById("step2")
+        .classList
+        .remove("active");
 
-        document.getElementById("total").textContent =
-            total.toLocaleString();
+
+    document
+        .getElementById("step3")
+        .classList
+        .remove("active");
+
+
+    if (
+        name === "scan"
+    ) {
+
+
+        document
+            .getElementById("step1")
+            .classList
+            .add("active");
 
     }
 
 
-    /*
-     * 商品削除
-     */
-    function deleteProduct(index) {
-
-        cart.splice(index, 1);
-
-        updateCart();
-
-    }
+    if (
+        name === "payment" ||
+        name === "cash"
+    ) {
 
 
-    /*
-     * 預かり金テンキー
-     */
-    function pressKey(key) {
-
-        const input =
-            document.getElementById("received");
-
-        let value = input.value;
-
-        if (value === "0") {
-            value = "";
-        }
-
-        value += key;
-
-        // 数字以外を除外
-        value = value.replace(/\D/g, "");
-
-        // 桁数制限
-        if (value.length > 8) {
-            value = value.substring(0, 8);
-        }
-
-        input.value = value || "0";
+        document
+            .getElementById("step2")
+            .classList
+            .add("active");
 
     }
 
 
+    if (
+        name === "complete"
+    ) {
+
+
+        document
+            .getElementById("step3")
+            .classList
+            .add("active");
+
+    }
+
+}
+
+
+/* ==========================================================
+   次のお客様
+========================================================== */
+
+function newCustomer() {
+
+
+    cart = [];
+
+    received =
+        "0";
+
+
+    document.getElementById(
+        "received"
+    ).textContent =
+        "0";
+
+
+    document.getElementById(
+        "cashError"
+    ).textContent =
+        "";
+
+
+    document.getElementById(
+        "scanError"
+    ).textContent =
+        "";
+
+
+    updateCart();
+
+
+    showScreen(
+        "scan"
+    );
+
+}
+
+
+/* ==========================================================
+   QR / JAN読み取り
+========================================================== */
+
+function onScanSuccess(
+    decodedText
+) {
+
+
+    const code =
+        decodedText.trim();
+
+
+    const now =
+        Date.now();
+
+
     /*
-     * 預かり金クリア
+     * 同じコードを
+     * 1.5秒以内に連続読み取り
+     * しないようにする
      */
-    function clearReceived() {
 
-        document.getElementById("received").value = "0";
+    if (
 
-        document.getElementById("paymentError").textContent = "";
+        code === lastScan &&
 
-        document.getElementById("changeArea").style.display = "none";
+        now - lastScanTime < 1500
+
+    ) {
+
+        return;
 
     }
 
 
-    /*
-     * おつり計算
-     */
-    function calculateChange() {
-
-        const total =
-            cart.reduce((sum, item) => sum + item.price, 0);
-
-        const received =
-            Number(document.getElementById("received").value);
+    lastScan =
+        code;
 
 
-        const error =
-            document.getElementById("paymentError");
-
-        const changeArea =
-            document.getElementById("changeArea");
+    lastScanTime =
+        now;
 
 
-        error.textContent = "";
-
-        changeArea.style.display = "none";
-
-
-        if (cart.length === 0) {
-
-            error.textContent =
-                "商品をスキャンしてください。";
-
-            return;
-
-        }
+    const result =
+        findProduct(
+            code
+        );
 
 
-        if (received < total) {
-
-            error.textContent =
-                "預かり金額が不足しています。";
-
-            return;
-
-        }
+    if (!result) {
 
 
-        const change = received - total;
+        document.getElementById(
+            "scanError"
+        ).textContent =
+
+            "登録されていない商品です："
+            + code;
 
 
-        document.getElementById("change").textContent =
-            change.toLocaleString();
-
-
-        changeArea.style.display = "block";
+        return;
 
     }
 
 
-    /*
-     * 新しい会計
-     */
-    function resetRegister() {
-
-        cart = [];
-
-        document.getElementById("received").value = "0";
-
-        document.getElementById("paymentError").textContent = "";
-
-        document.getElementById("scanError").textContent = "";
-
-        document.getElementById("changeArea").style.display = "none";
-
-        updateCart();
-
-    }
+    addProduct(
+        result.code
+    );
 
 
-    /*
-     * QRスキャナー起動
-     */
-    const scanner = new Html5Qrcode("reader");
+    document.getElementById(
+        "scanError"
+    ).textContent =
+        "「"
+        + result.product.name
+        + "」を追加しました。";
+
+}
 
 
-    scanner.start(
+/* ==========================================================
+   スキャナー起動
+========================================================== */
 
-        { facingMode: "environment" },
+async function startScanner() {
 
-        {
+
+    try {
+
+
+        scanner =
+            new Html5Qrcode(
+                "reader"
+            );
+
+
+        const config = {
+
+
             fps: 10,
+
+
             qrbox: {
-                width: 250,
-                height: 250
+
+                width: 280,
+
+                height: 180
+
+            },
+
+
+            formatsToSupport: [
+
+
+                Html5QrcodeSupportedFormats.QR_CODE,
+
+
+                Html5QrcodeSupportedFormats.EAN_13,
+
+
+                Html5QrcodeSupportedFormats.EAN_8,
+
+
+                Html5QrcodeSupportedFormats.UPC_A,
+
+
+                Html5QrcodeSupportedFormats.UPC_E,
+
+
+                Html5QrcodeSupportedFormats.CODE_128
+
+
+            ]
+
+
+        };
+
+
+        await scanner.start(
+
+
+            {
+
+                facingMode:
+                    "environment"
+
+            },
+
+
+            config,
+
+
+            onScanSuccess,
+
+
+            function(errorMessage) {
+
+                /*
+                 * 読み取り中のエラーは無視
+                 */
+
             }
-        },
 
-        onScanSuccess,
 
-        function(errorMessage) {
-            // 読み取り中のエラーなので何もしない
+        );
+
+
+    }
+
+
+    catch (error) {
+
+
+        console.error(
+            error
+        );
+
+
+        document.getElementById(
+            "scanError"
+        ).textContent =
+
+            "カメラを起動できません。"
+            + "Safariのカメラ使用を許可してください。";
+
+    }
+
+}
+
+
+/* ==========================================================
+   商品カード表示
+========================================================== */
+
+function showLabels() {
+
+
+    const screen =
+        document.getElementById(
+            "labelsScreen"
+        );
+
+
+    const grid =
+        document.getElementById(
+            "labelsGrid"
+        );
+
+
+    grid.innerHTML =
+        "";
+
+
+    for (
+        const code in products
+    ) {
+
+
+        const product =
+            products[code];
+
+
+        const label =
+            document.createElement(
+                "div"
+            );
+
+
+        label.className =
+            "product-label";
+
+
+        label.innerHTML = `
+
+            <div class="label-name">
+
+                ${escapeHtml(
+                    product.name
+                )}
+
+            </div>
+
+
+            <div class="label-price">
+
+                ￥${product.price.toLocaleString()}
+
+            </div>
+
+
+            <div class="label-code">
+
+                商品コード：${code}
+
+            </div>
+
+
+            <div
+                class="label-qr"
+                id="qr-${code}">
+
+            </div>
+
+
+            <svg
+                class="label-barcode"
+                id="barcode-${code}">
+
+            </svg>
+
+
+            <div class="label-jan">
+
+                ${product.jan}
+
+            </div>
+
+        `;
+
+
+        grid.appendChild(
+            label
+        );
+
+
+        /*
+         * QRコード生成
+         */
+
+        new QRCode(
+
+            document.getElementById(
+                "qr-" + code
+            ),
+
+            {
+
+                text: code,
+
+                width: 120,
+
+                height: 120,
+
+                correctLevel:
+                    QRCode.CorrectLevel.M
+
+            }
+
+        );
+
+
+        /*
+         * JANバーコード生成
+         */
+
+        try {
+
+
+            JsBarcode(
+
+                "#barcode-" + code,
+
+                product.jan,
+
+                {
+
+                    format:
+                        "ean13",
+
+                    width: 2,
+
+                    height: 60,
+
+                    displayValue:
+                        false,
+
+                    margin: 0
+
+                }
+
+            );
+
+
         }
 
-    ).catch(function(error) {
+        catch(error) {
 
-        document.getElementById("scanError").textContent =
-            "カメラを起動できませんでした。カメラの使用を許可してください。";
 
-    });
+            console.error(
+                "JANコード生成エラー",
+                error
+            );
+
+        }
+
+    }
+
+
+    screen.classList.add(
+        "active"
+    );
+
+
+    document.querySelector(
+        ".app"
+    ).style.display =
+        "none";
+
+}
+
+
+/* ==========================================================
+   商品カードを閉じる
+========================================================== */
+
+function hideLabels() {
+
+
+    document
+        .getElementById(
+            "labelsScreen"
+        )
+        .classList
+        .remove("active");
+
+
+    document.querySelector(
+        ".app"
+    ).style.display =
+        "block";
+
+}
+
+
+/* ==========================================================
+   起動
+========================================================== */
+
+window.addEventListener(
+    "load",
+    function() {
+
+
+        updateCart();
+
+
+        startScanner();
+
+    }
+);
 
 </script>
 
+
 </body>
+
 </html>
