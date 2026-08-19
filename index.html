@@ -14,22 +14,31 @@
 <title>セルフレジ研修端末</title>
 
 
-<!-- QR・バーコード読み取り -->
+<!-- =====================================================
+     QR・JAN読み取り
+===================================================== -->
+
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 
-<!-- QRコード生成 -->
+<!-- =====================================================
+     QRコード生成
+===================================================== -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 
-<!-- JANバーコード生成 -->
+<!-- =====================================================
+     JAN-13バーコード生成
+===================================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
 
 <style>
 
 /* =========================================================
-   基本設定
+   基本
 ========================================================= */
 
 * {
@@ -39,6 +48,7 @@
 
 html,
 body {
+
     margin: 0;
     padding: 0;
 
@@ -54,28 +64,35 @@ body {
         sans-serif;
 
     background: #f3f3f3;
+
     color: #333333;
+
 }
 
 body {
+
     overflow-x: hidden;
+
 }
 
 button {
+
     font-family: inherit;
+
     cursor: pointer;
+
 }
 
 
 /* =========================================================
-   セブンイレブン風カラー
+   セブン系イメージカラー
 =========================================================
 
-   緑    #008c45
+   緑     #008c45
    オレンジ #f58220
-   赤    #d71920
-   茶    #6b3f2a
-   白    #ffffff
+   赤     #d71920
+   茶     #6b3f2a
+   白     #ffffff
 
 ========================================================= */
 
@@ -87,6 +104,7 @@ button {
 .steps {
 
     width: 100%;
+
     height: 74px;
 
     display: flex;
@@ -95,15 +113,11 @@ button {
 
     background: #ffffff;
 
-    border-bottom: 0;
-
     box-shadow:
         0 2px 6px rgba(0,0,0,0.12);
 
 }
 
-
-/* 3色ライン */
 
 .steps::after {
 
@@ -138,6 +152,7 @@ button {
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     position: relative;
@@ -165,7 +180,9 @@ button {
     position: absolute;
 
     left: 10%;
+
     right: 10%;
+
     bottom: 7px;
 
     height: 4px;
@@ -178,6 +195,7 @@ button {
 .step-number {
 
     width: 34px;
+
     height: 34px;
 
     margin-right: 9px;
@@ -185,6 +203,7 @@ button {
     display: inline-flex;
 
     align-items: center;
+
     justify-content: center;
 
     border-radius: 50%;
@@ -284,7 +303,7 @@ button {
 
 
 /* =========================================================
-   スキャン画面
+   スキャン
 ========================================================= */
 
 .scan-layout {
@@ -350,6 +369,35 @@ button {
     color: #d71920;
 
     font-weight: bold;
+
+}
+
+
+/* =========================================================
+   スキャン結果表示
+========================================================= */
+
+.scan-result {
+
+    margin-top: 15px;
+
+    padding: 12px;
+
+    border-radius: 6px;
+
+    background: #edf8f2;
+
+    border: 2px solid #008c45;
+
+    text-align: center;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    color: #008c45;
+
+    min-height: 48px;
 
 }
 
@@ -437,8 +485,6 @@ button {
     font-size: 18px;
 
     font-weight: bold;
-
-    color: #333333;
 
 }
 
@@ -530,7 +576,7 @@ button {
 }
 
 
-.button-blue {
+.button-orange {
 
     background: #f58220;
 
@@ -539,7 +585,7 @@ button {
 }
 
 
-.button-blue:active {
+.button-orange:active {
 
     background: #d9660c;
 
@@ -604,7 +650,7 @@ button {
 
 
 /* =========================================================
-   支払い画面
+   支払い
 ========================================================= */
 
 .payment-layout {
@@ -929,7 +975,7 @@ button {
 
 
 /* =========================================================
-   商品カード
+   商品コード印刷画面
 ========================================================= */
 
 .labels-screen {
@@ -980,7 +1026,11 @@ button {
 }
 
 
-.labels-grid {
+/* =========================================================
+   QR・JANを完全に別カード
+========================================================= */
+
+.code-print-grid {
 
     max-width: 1100px;
 
@@ -991,29 +1041,64 @@ button {
     grid-template-columns:
         repeat(2, 1fr);
 
-    gap: 15px;
+    gap: 20px;
 
 }
 
 
-.product-label {
-
-    min-height: 315px;
-
-    padding: 15px;
+.code-card {
 
     background: #ffffff;
 
-    border: 3px solid #f58220;
+    border: 3px solid #008c45;
 
-    border-radius: 6px;
+    border-radius: 8px;
+
+    padding: 20px;
+
+    min-height: 330px;
 
     text-align: center;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
 
 }
 
 
-.label-name {
+.code-card.jan-card {
+
+    border-color: #f58220;
+
+}
+
+
+.code-type {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    margin-bottom: 12px;
+
+    color: #008c45;
+
+}
+
+
+.jan-card .code-type {
+
+    color: #f58220;
+
+}
+
+
+.code-product-name {
 
     font-size: 22px;
 
@@ -1022,57 +1107,63 @@ button {
 }
 
 
-.label-price {
+.code-price {
 
-    font-size: 28px;
+    font-size: 26px;
 
     font-weight: bold;
 
     color: #d71920;
 
-    margin-bottom: 8px;
+    margin-bottom: 12px;
 
 }
 
 
-.label-code {
+.code-number {
 
-    font-size: 15px;
+    margin-top: 8px;
 
-    color: #008c45;
+    font-size: 16px;
 
-    margin-bottom: 8px;
+    letter-spacing: 1px;
 
 }
 
 
-.label-qr {
+.qr-container {
+
+    width: 160px;
+
+    height: 160px;
 
     display: flex;
 
-    justify-content: center;
+    align-items: center;
 
-    margin: 5px auto;
+    justify-content: center;
 
 }
 
 
-.label-barcode {
+.jan-barcode {
 
     width: 90%;
 
-    max-width: 350px;
+    max-width: 360px;
 
-    height: 70px;
+    height: 90px;
 
 }
 
 
-.label-jan {
+.code-description {
+
+    margin-top: 10px;
+
+    color: #666666;
 
     font-size: 14px;
-
-    letter-spacing: 2px;
 
 }
 
@@ -1106,7 +1197,7 @@ button {
     }
 
 
-    .labels-grid {
+    .code-print-grid {
 
         grid-template-columns:
             repeat(2, 1fr);
@@ -1116,9 +1207,13 @@ button {
     }
 
 
-    .product-label {
+    .code-card {
 
         page-break-inside: avoid;
+
+        min-height: 300px;
+
+        border: 2px solid #333333;
 
     }
 
@@ -1130,7 +1225,6 @@ button {
 ========================================================= */
 
 @media (max-width: 750px) {
-
 
     .steps {
 
@@ -1149,6 +1243,7 @@ button {
     .step-number {
 
         width: 25px;
+
         height: 25px;
 
         margin-right: 4px;
@@ -1223,12 +1318,11 @@ button {
     }
 
 
-    .labels-grid {
+    .code-print-grid {
 
         grid-template-columns: 1fr;
 
     }
-
 
 }
 
@@ -1262,7 +1356,9 @@ button {
 <div id="app">
 
 
-    <!-- 上部ステップ -->
+    <!-- =================================================
+         上部ステップ
+    ================================================== -->
 
     <div class="steps">
 
@@ -1308,7 +1404,7 @@ button {
 
 
     <!-- =================================================
-         商品スキャン
+         商品スキャン画面
     ================================================== -->
 
     <section id="screenScan"
@@ -1350,6 +1446,14 @@ button {
 
                     商品のコードを
                     カメラに向けてください
+
+                </div>
+
+
+                <div id="scanResult"
+                     class="scan-result">
+
+                    スキャン待機中
 
                 </div>
 
@@ -1425,7 +1529,7 @@ button {
         </div>
 
 
-        <!-- ボタン -->
+        <!-- 操作 -->
 
         <div class="bottom-buttons">
 
@@ -1440,7 +1544,7 @@ button {
 
 
             <button
-                class="button button-blue"
+                class="button button-orange"
                 onclick="goPayment()">
 
                 お支払いへ
@@ -1458,7 +1562,7 @@ button {
                 class="button button-green"
                 onclick="showLabels()">
 
-                商品カードを表示・印刷
+                商品QR・JANを表示・印刷
 
             </button>
 
@@ -1591,7 +1695,7 @@ button {
 
 
     <!-- =================================================
-         現金
+         現金支払い
     ================================================== -->
 
     <section id="screenCash"
@@ -1613,11 +1717,9 @@ button {
 
                 <div class="cash-row">
 
-
                     <span>
                         合計
                     </span>
-
 
                     <span class="cash-total">
 
@@ -1626,7 +1728,6 @@ button {
                         </span>
 
                     </span>
-
 
                 </div>
 
@@ -1660,77 +1761,99 @@ button {
                     <button
                         class="key"
                         onclick="keyPress('1')">
+
                         1
+
                     </button>
 
 
                     <button
                         class="key"
                         onclick="keyPress('2')">
+
                         2
+
                     </button>
 
 
                     <button
                         class="key"
                         onclick="keyPress('3')">
+
                         3
+
                     </button>
 
 
                     <button
                         class="key"
                         onclick="keyPress('4')">
+
                         4
+
                     </button>
 
 
                     <button
                         class="key"
                         onclick="keyPress('5')">
+
                         5
+
                     </button>
 
 
                     <button
                         class="key"
                         onclick="keyPress('6')">
+
                         6
+
                     </button>
 
 
                     <button
                         class="key"
                         onclick="keyPress('7')">
+
                         7
+
                     </button>
 
 
                     <button
                         class="key"
                         onclick="keyPress('8')">
+
                         8
+
                     </button>
 
 
                     <button
                         class="key"
                         onclick="keyPress('9')">
+
                         9
+
                     </button>
 
 
                     <button
                         class="key"
                         onclick="keyPress('0')">
+
                         0
+
                     </button>
 
 
                     <button
                         class="key"
                         onclick="keyPress('00')">
+
                         00
+
                     </button>
 
 
@@ -1873,7 +1996,7 @@ button {
 
 
             <button
-                class="button button-blue"
+                class="button button-orange"
                 style="width:100%;"
                 onclick="newCustomer()">
 
@@ -1893,7 +2016,7 @@ button {
 
 
 <!-- =====================================================
-     商品カード
+     QR・JAN印刷画面
 ===================================================== -->
 
 <section id="labelsScreen"
@@ -1905,7 +2028,7 @@ button {
 
         <div class="labels-title">
 
-            研修用 商品カード
+            研修用 商品コード
 
         </div>
 
@@ -1914,7 +2037,7 @@ button {
 
 
             <button
-                class="button button-blue"
+                class="button button-orange"
                 onclick="window.print()">
 
                 印刷する
@@ -1938,7 +2061,7 @@ button {
 
 
     <div id="labelsGrid"
-         class="labels-grid">
+         class="code-print-grid">
 
     </div>
 
@@ -1953,11 +2076,13 @@ button {
    商品マスタ
 =========================================================
 
-   QRコード：
-   A001 などの商品コード
+   QRコード
+   ↓
+   A001などの商品コード
 
-   JANコード：
-   研修用の架空コード
+   JAN
+   ↓
+   13桁の研修用JAN
 
 ========================================================= */
 
@@ -1970,7 +2095,7 @@ const products = {
 
         price: 198,
 
-        jan: "4900000000016"
+        jan: "4900000000018"
 
     },
 
@@ -1981,7 +2106,7 @@ const products = {
 
         price: 147,
 
-        jan: "4900000000023"
+        jan: "4900000000025"
 
     },
 
@@ -1992,7 +2117,7 @@ const products = {
 
         price: 320,
 
-        jan: "4900000000030"
+        jan: "4900000000032"
 
     },
 
@@ -2003,7 +2128,7 @@ const products = {
 
         price: 224,
 
-        jan: "4900000000047"
+        jan: "4900000000049"
 
     },
 
@@ -2014,7 +2139,7 @@ const products = {
 
         price: 298,
 
-        jan: "4900000000054"
+        jan: "4900000000056"
 
     },
 
@@ -2025,7 +2150,7 @@ const products = {
 
         price: 498,
 
-        jan: "4900000000061"
+        jan: "4900000000063"
 
     },
 
@@ -2036,7 +2161,7 @@ const products = {
 
         price: 150,
 
-        jan: "4900000000078"
+        jan: "4900000000070"
 
     },
 
@@ -2047,7 +2172,7 @@ const products = {
 
         price: 92,
 
-        jan: "4900000000085"
+        jan: "4900000000087"
 
     },
 
@@ -2058,7 +2183,7 @@ const products = {
 
         price: 250,
 
-        jan: "4900000000092"
+        jan: "4900000000094"
 
     },
 
@@ -2069,7 +2194,7 @@ const products = {
 
         price: 198,
 
-        jan: "4900000000106"
+        jan: "4900000000100"
 
     },
 
@@ -2080,7 +2205,7 @@ const products = {
 
         price: 5,
 
-        jan: "4900000000113"
+        jan: "4900000000117"
 
     }
 
@@ -2102,6 +2227,125 @@ let lastScan = "";
 
 let lastScanTime = 0;
 
+let audioContext = null;
+
+
+/* =========================================================
+   スキャン音
+=========================================================
+
+   ブラウザ内で電子音を生成します。
+
+   外部MP3不要。
+
+========================================================= */
+
+function playScanSound() {
+
+    try {
+
+
+        if (!audioContext) {
+
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+        }
+
+
+        if (
+            audioContext.state ===
+            "suspended"
+        ) {
+
+            audioContext.resume();
+
+        }
+
+
+        const oscillator =
+            audioContext.createOscillator();
+
+
+        const gain =
+            audioContext.createGain();
+
+
+        oscillator.type =
+            "sine";
+
+
+        oscillator.frequency.setValueAtTime(
+
+            1800,
+
+            audioContext.currentTime
+
+        );
+
+
+        oscillator.frequency
+            .exponentialRampToValueAtTime(
+
+                1100,
+
+                audioContext.currentTime + 0.08
+
+            );
+
+
+        gain.gain.setValueAtTime(
+
+            0.25,
+
+            audioContext.currentTime
+
+        );
+
+
+        gain.gain
+            .exponentialRampToValueAtTime(
+
+                0.001,
+
+                audioContext.currentTime + 0.12
+
+            );
+
+
+        oscillator.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+
+        oscillator.start();
+
+
+        oscillator.stop(
+
+            audioContext.currentTime + 0.12
+
+        );
+
+
+    }
+
+    catch(error) {
+
+        console.log(
+            "音声再生エラー",
+            error
+        );
+
+    }
+
+}
+
 
 /* =========================================================
    商品検索
@@ -2110,12 +2354,15 @@ let lastScanTime = 0;
 function findProduct(code) {
 
 
-    code = code.trim();
+    code =
+        code.trim();
 
 
     /* QRコード */
 
-    if (products[code]) {
+    if (
+        products[code]
+    ) {
 
 
         return {
@@ -2160,7 +2407,7 @@ function findProduct(code) {
 
 
 /* =========================================================
-   合計金額
+   合計
 ========================================================= */
 
 function getTotal() {
@@ -2170,9 +2417,13 @@ function getTotal() {
 
         function(sum, item) {
 
+
             return sum +
+
                 item.price *
+
                 item.quantity;
+
 
         },
 
@@ -2194,8 +2445,11 @@ function getCount() {
 
         function(sum, item) {
 
+
             return sum +
+
                 item.quantity;
+
 
         },
 
@@ -2242,7 +2496,9 @@ function addProduct(code) {
         existing.quantity++;
 
 
-    } else {
+    }
+
+    else {
 
 
         cart.push({
@@ -2266,17 +2522,21 @@ function addProduct(code) {
 
 
 /* =========================================================
-   カート表示更新
+   カート更新
 ========================================================= */
 
 function updateCart() {
 
 
     const element =
-        document.getElementById("cart");
+        document.getElementById(
+            "cart"
+        );
 
 
-    if (cart.length === 0) {
+    if (
+        cart.length === 0
+    ) {
 
 
         element.innerHTML = `
@@ -2289,8 +2549,9 @@ function updateCart() {
 
         `;
 
+    }
 
-    } else {
+    else {
 
 
         let html = "";
@@ -2302,7 +2563,9 @@ function updateCart() {
 
 
                 const subtotal =
+
                     item.price *
+
                     item.quantity;
 
 
@@ -2312,7 +2575,6 @@ function updateCart() {
 
 
                         <div>
-
 
                             <div class="product-name">
 
@@ -2326,7 +2588,6 @@ function updateCart() {
                                 ${item.code}
 
                             </div>
-
 
                         </div>
 
@@ -2371,11 +2632,14 @@ function updateCart() {
 
     document.getElementById("total")
         .textContent =
-        getTotal().toLocaleString();
+
+        getTotal()
+            .toLocaleString();
 
 
     document.getElementById("totalCount")
         .textContent =
+
         getCount();
 
 }
@@ -2443,7 +2707,9 @@ function removeItem(index) {
 function clearCart() {
 
 
-    if (cart.length === 0) {
+    if (
+        cart.length === 0
+    ) {
 
         return;
 
@@ -2459,7 +2725,9 @@ function clearCart() {
 
         cart = [];
 
+
         updateCart();
+
 
     }
 
@@ -2467,13 +2735,15 @@ function clearCart() {
 
 
 /* =========================================================
-   支払い画面へ
+   支払いへ
 ========================================================= */
 
 function goPayment() {
 
 
-    if (cart.length === 0) {
+    if (
+        cart.length === 0
+    ) {
 
 
         alert(
@@ -2486,12 +2756,18 @@ function goPayment() {
     }
 
 
-    document.getElementById("paymentTotal")
-        .textContent =
-        getTotal().toLocaleString();
+    document.getElementById(
+        "paymentTotal"
+    )
+    .textContent =
+
+        getTotal()
+            .toLocaleString();
 
 
-    showScreen("payment");
+    showScreen(
+        "payment"
+    );
 
 }
 
@@ -2509,28 +2785,40 @@ function selectPayment(type) {
 
     /* 現金 */
 
-    if (type === "cash") {
+    if (
+        type === "cash"
+    ) {
 
 
-        document.getElementById("cashTotal")
-            .textContent =
+        document.getElementById(
+            "cashTotal"
+        )
+        .textContent =
+
             total.toLocaleString();
 
 
-        received = "0";
-
-
-        document.getElementById("received")
-            .textContent =
+        received =
             "0";
 
 
-        document.getElementById("cashError")
-            .textContent =
+        document.getElementById(
+            "received"
+        )
+        .textContent =
+            "0";
+
+
+        document.getElementById(
+            "cashError"
+        )
+        .textContent =
             "";
 
 
-        showScreen("cash");
+        showScreen(
+            "cash"
+        );
 
 
         return;
@@ -2539,27 +2827,36 @@ function selectPayment(type) {
 
 
     /*
-       研修用として
-       カード・電子マネー等は
-       即時決済
-    */
+     * 現金以外は研修用として
+     * 即時決済
+     */
 
-    document.getElementById("completeTotal")
-        .textContent =
+    document.getElementById(
+        "completeTotal"
+    )
+    .textContent =
+
         total.toLocaleString();
 
 
-    document.getElementById("completeReceived")
-        .textContent =
+    document.getElementById(
+        "completeReceived"
+    )
+    .textContent =
+
         total.toLocaleString();
 
 
-    document.getElementById("change")
-        .textContent =
+    document.getElementById(
+        "change"
+    )
+    .textContent =
         "0";
 
 
-    showScreen("complete");
+    showScreen(
+        "complete"
+    );
 
 }
 
@@ -2571,7 +2868,9 @@ function selectPayment(type) {
 function keyPress(value) {
 
 
-    if (received === "0") {
+    if (
+        received === "0"
+    ) {
 
         received = "";
 
@@ -2588,7 +2887,9 @@ function keyPress(value) {
         );
 
 
-    if (received.length > 8) {
+    if (
+        received.length > 8
+    ) {
 
 
         received =
@@ -2600,12 +2901,15 @@ function keyPress(value) {
     }
 
 
-    document.getElementById("received")
-        .textContent =
+    document.getElementById(
+        "received"
+    )
+    .textContent =
 
         Number(
             received || 0
-        ).toLocaleString();
+        )
+        .toLocaleString();
 
 }
 
@@ -2617,16 +2921,21 @@ function keyPress(value) {
 function clearReceived() {
 
 
-    received = "0";
-
-
-    document.getElementById("received")
-        .textContent =
+    received =
         "0";
 
 
-    document.getElementById("cashError")
-        .textContent =
+    document.getElementById(
+        "received"
+    )
+    .textContent =
+        "0";
+
+
+    document.getElementById(
+        "cashError"
+    )
+    .textContent =
         "";
 
 }
@@ -2648,13 +2957,18 @@ function payCash() {
 
 
     const error =
-        document.getElementById("cashError");
+        document.getElementById(
+            "cashError"
+        );
 
 
-    error.textContent = "";
+    error.textContent =
+        "";
 
 
-    if (money < total) {
+    if (
+        money < total
+    ) {
 
 
         const shortage =
@@ -2679,22 +2993,33 @@ function payCash() {
         money - total;
 
 
-    document.getElementById("completeTotal")
-        .textContent =
+    document.getElementById(
+        "completeTotal"
+    )
+    .textContent =
+
         total.toLocaleString();
 
 
-    document.getElementById("completeReceived")
-        .textContent =
+    document.getElementById(
+        "completeReceived"
+    )
+    .textContent =
+
         money.toLocaleString();
 
 
-    document.getElementById("change")
-        .textContent =
+    document.getElementById(
+        "change"
+    )
+    .textContent =
+
         change.toLocaleString();
 
 
-    showScreen("complete");
+    showScreen(
+        "complete"
+    );
 
 }
 
@@ -2750,13 +3075,15 @@ function showScreen(name) {
     .add("active");
 
 
-    updateSteps(name);
+    updateSteps(
+        name
+    );
 
 }
 
 
 /* =========================================================
-   ステップ表示
+   ステップ更新
 ========================================================= */
 
 function updateSteps(name) {
@@ -2777,7 +3104,9 @@ function updateSteps(name) {
         .remove("active");
 
 
-    if (name === "scan") {
+    if (
+        name === "scan"
+    ) {
 
 
         document.getElementById("step1")
@@ -2800,7 +3129,9 @@ function updateSteps(name) {
     }
 
 
-    if (name === "complete") {
+    if (
+        name === "complete"
+    ) {
 
 
         document.getElementById("step3")
@@ -2821,34 +3152,51 @@ function newCustomer() {
 
     cart = [];
 
-    received = "0";
 
-
-    document.getElementById("received")
-        .textContent =
+    received =
         "0";
 
 
-    document.getElementById("cashError")
-        .textContent =
+    document.getElementById(
+        "received"
+    )
+    .textContent =
+        "0";
+
+
+    document.getElementById(
+        "cashError"
+    )
+    .textContent =
         "";
 
 
-    document.getElementById("scanError")
-        .textContent =
+    document.getElementById(
+        "scanError"
+    )
+    .textContent =
         "";
+
+
+    document.getElementById(
+        "scanResult"
+    )
+    .textContent =
+        "スキャン待機中";
 
 
     updateCart();
 
 
-    showScreen("scan");
+    showScreen(
+        "scan"
+    );
 
 }
 
 
 /* =========================================================
-   スキャン成功
+   ★ スキャン成功
 ========================================================= */
 
 function onScanSuccess(decodedText) {
@@ -2863,13 +3211,16 @@ function onScanSuccess(decodedText) {
 
 
     /*
-       同じコードを短時間に
-       何回も読み取らない
-    */
+     * 同じコードを
+     * 1.5秒以内に連続読み取りしない
+     */
 
     if (
+
         code === lastScan &&
+
         now - lastScanTime < 1500
+
     ) {
 
         return;
@@ -2889,11 +3240,17 @@ function onScanSuccess(decodedText) {
         findProduct(code);
 
 
+    /*
+     * 登録されていない商品
+     */
+
     if (!result) {
 
 
-        document.getElementById("scanError")
-            .textContent =
+        document.getElementById(
+            "scanError"
+        )
+        .textContent =
 
             "登録されていない商品です："
             + code;
@@ -2904,25 +3261,62 @@ function onScanSuccess(decodedText) {
     }
 
 
-    addProduct(result.code);
+    /*
+     * =========================================
+     * ★ 商品が正常に読み取れた
+     * =========================================
+     *
+     * ここで「ピッ♪」
+     */
+
+    playScanSound();
 
 
-    document.getElementById("scanError")
-        .textContent =
+    /*
+     * 商品を追加
+     */
 
-        "「"
+    addProduct(
+        result.code
+    );
+
+
+    /*
+     * スキャン結果表示
+     */
+
+    document.getElementById(
+        "scanResult"
+    )
+    .textContent =
+
+        "ピッ♪　"
+
         + result.product.name
-        + "」を追加しました。";
+
+        + "　￥"
+
+        + result.product.price
+            .toLocaleString();
+
+
+    document.getElementById(
+        "scanError"
+    )
+    .textContent =
+        "";
 
 }
 
 
 /* =========================================================
-   カメラ自動起動
+   ★ カメラ自動起動
 =========================================================
 
-   user
+   facingMode: "user"
+
    ↓
+
    iPadの内側カメラ
 
 ========================================================= */
@@ -2934,7 +3328,9 @@ async function startScanner() {
 
 
         scanner =
-            new Html5Qrcode("reader");
+            new Html5Qrcode(
+                "reader"
+            );
 
 
         const config = {
@@ -2949,7 +3345,11 @@ async function startScanner() {
 
                 height: 180
 
-            }
+            },
+
+
+            aspectRatio:
+                1.7777778
 
 
         };
@@ -2975,9 +3375,9 @@ async function startScanner() {
             function(errorMessage) {
 
                 /*
-                   読み取り中のエラーは
-                   表示しない
-                */
+                 * 読み取り中の
+                 * 一時的なエラーは無視
+                 */
 
             }
 
@@ -2986,17 +3386,21 @@ async function startScanner() {
 
     }
 
-
     catch(error) {
 
 
-        console.error(error);
+        console.error(
+            error
+        );
 
 
-        document.getElementById("scanError")
-            .textContent =
+        document.getElementById(
+            "scanError"
+        )
+        .textContent =
 
-            "カメラを起動できませんでした。";
+            "カメラを起動できませんでした。"
+            + " iPadのカメラ許可を確認してください。";
 
 
     }
@@ -3005,7 +3409,7 @@ async function startScanner() {
 
 
 /* =========================================================
-   商品カード表示
+   商品コード表示
 ========================================================= */
 
 function showLabels() {
@@ -3036,64 +3440,75 @@ function showLabels() {
             products[code];
 
 
-        const label =
-            document.createElement("div");
+        /* =========================================
+           QRカード
+        ========================================= */
+
+        const qrCard =
+            document.createElement(
+                "div"
+            );
 
 
-        label.className =
-            "product-label";
+        qrCard.className =
+            "code-card";
 
 
-        label.innerHTML = `
+        qrCard.innerHTML = `
 
-            <div class="label-name">
+            <div class="code-type">
+
+                QRコード
+
+            </div>
+
+
+            <div class="code-product-name">
 
                 ${escapeHtml(product.name)}
 
             </div>
 
 
-            <div class="label-price">
+            <div class="code-price">
 
                 ￥${product.price.toLocaleString()}
 
             </div>
 
 
-            <div class="label-code">
+            <div
+                class="qr-container"
+                id="qr-${code}">
+
+            </div>
+
+
+            <div class="code-number">
 
                 商品コード：${code}
 
             </div>
 
 
-            <div
-                class="label-qr"
-                id="qr-${code}">
+            <div class="code-description">
 
-            </div>
-
-
-            <svg
-                class="label-barcode"
-                id="barcode-${code}">
-
-            </svg>
-
-
-            <div class="label-jan">
-
-                ${product.jan}
+                QRコードを
+                セルフレジで読み取ってください
 
             </div>
 
         `;
 
 
-        grid.appendChild(label);
+        grid.appendChild(
+            qrCard
+        );
 
 
-        /* QRコード */
+        /*
+         * QR生成
+         */
 
         new QRCode(
 
@@ -3105,9 +3520,9 @@ function showLabels() {
 
                 text: code,
 
-                width: 120,
+                width: 150,
 
-                height: 120,
+                height: 150,
 
                 correctLevel:
                     QRCode.CorrectLevel.M
@@ -3117,7 +3532,75 @@ function showLabels() {
         );
 
 
-        /* JANバーコード */
+        /* =========================================
+           JANカード
+        ========================================= */
+
+        const janCard =
+            document.createElement(
+                "div"
+            );
+
+
+        janCard.className =
+            "code-card jan-card";
+
+
+        janCard.innerHTML = `
+
+            <div class="code-type">
+
+                JANバーコード
+
+            </div>
+
+
+            <div class="code-product-name">
+
+                ${escapeHtml(product.name)}
+
+            </div>
+
+
+            <div class="code-price">
+
+                ￥${product.price.toLocaleString()}
+
+            </div>
+
+
+            <svg
+                class="jan-barcode"
+                id="barcode-${code}">
+
+            </svg>
+
+
+            <div class="code-number">
+
+                ${product.jan}
+
+            </div>
+
+
+            <div class="code-description">
+
+                JANバーコードを
+                セルフレジで読み取ってください
+
+            </div>
+
+        `;
+
+
+        grid.appendChild(
+            janCard
+        );
+
+
+        /*
+         * JAN生成
+         */
 
         try {
 
@@ -3134,11 +3617,11 @@ function showLabels() {
 
                     width: 2,
 
-                    height: 60,
+                    height: 75,
 
                     displayValue: false,
 
-                    margin: 0
+                    margin: 5
 
                 }
 
@@ -3150,26 +3633,33 @@ function showLabels() {
         catch(error) {
 
 
-            console.error(error);
+            console.error(
+                "JAN生成エラー:",
+                error
+            );
+
 
         }
 
     }
 
 
-    screen.classList.add("active");
+    screen.classList.add(
+        "active"
+    );
 
 
-    document.getElementById("app")
-        .style
-        .display =
+    document.getElementById(
+        "app"
+    )
+    .style.display =
         "none";
 
 }
 
 
 /* =========================================================
-   商品カードを閉じる
+   商品コード画面を閉じる
 ========================================================= */
 
 function hideLabels() {
@@ -3182,22 +3672,17 @@ function hideLabels() {
     .remove("active");
 
 
-    document.getElementById("app")
-        .style
-        .display =
+    document.getElementById(
+        "app"
+    )
+    .style.display =
         "block";
 
 }
 
 
 /* =========================================================
-   ページ起動時
-=========================================================
-
-   ★自動起動★
-
-   ページを開いた瞬間に
-   iPadの内側カメラを起動
+   ページ起動
 ========================================================= */
 
 window.addEventListener(
@@ -3207,6 +3692,10 @@ window.addEventListener(
 
         updateCart();
 
+
+        /*
+         * カメラ自動起動
+         */
 
         startScanner();
 
