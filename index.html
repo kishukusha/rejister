@@ -7,38 +7,29 @@
 
 <meta name="viewport"
       content="width=device-width,
-               initial-scale=1.0,
-               maximum-scale=1.0,
-               user-scalable=no">
+      initial-scale=1.0,
+      maximum-scale=1.0,
+      user-scalable=no">
 
 <title>セルフレジ研修端末</title>
 
 
-<!-- =====================================================
-     QR・バーコード読み取り
-===================================================== -->
-
+<!-- QR・バーコード読み取り -->
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 
-<!-- =====================================================
-     QRコード生成
-===================================================== -->
-
+<!-- QRコード作成 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 
-<!-- =====================================================
-     JAN-13バーコード生成
-===================================================== -->
-
+<!-- JAN-13バーコード作成 -->
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
 
 <style>
 
 /* =====================================================
-   基本
+   基本設定
 ===================================================== */
 
 * {
@@ -66,7 +57,6 @@ body {
     background: #f3f3f3;
 
     color: #333;
-
 }
 
 body {
@@ -96,7 +86,6 @@ button {
 
     box-shadow:
         0 2px 6px rgba(0,0,0,0.12);
-
 }
 
 .steps::after {
@@ -121,7 +110,6 @@ button {
             #d71920 66%,
             #d71920 100%
         );
-
 }
 
 .step {
@@ -136,8 +124,8 @@ button {
     color: #aaa;
 
     font-size: 18px;
-    font-weight: bold;
 
+    font-weight: bold;
 }
 
 .step.active {
@@ -161,7 +149,6 @@ button {
     background: #ddd;
 
     color: #666;
-
 }
 
 .step.active .step-number {
@@ -169,7 +156,6 @@ button {
     background: #008c45;
 
     color: white;
-
 }
 
 
@@ -185,7 +171,6 @@ button {
         calc(100vh - 74px);
 
     padding: 20px;
-
 }
 
 .screen.active {
@@ -207,7 +192,6 @@ button {
 
     margin:
         5px 0 22px;
-
 }
 
 
@@ -227,7 +211,6 @@ button {
 
     box-shadow:
         0 2px 5px rgba(0,0,0,0.08);
-
 }
 
 .card-title {
@@ -241,12 +224,11 @@ button {
     padding-left: 12px;
 
     border-left: 6px solid #f58220;
-
 }
 
 
 /* =====================================================
-   スキャン
+   スキャン画面
 ===================================================== */
 
 .scan-layout {
@@ -261,8 +243,10 @@ button {
         1fr 1fr;
 
     gap: 18px;
-
 }
+
+
+/* カメラ */
 
 #reader {
 
@@ -275,7 +259,6 @@ button {
     border-radius: 6px;
 
     overflow: hidden;
-
 }
 
 .scan-message {
@@ -289,12 +272,14 @@ button {
     line-height: 1.7;
 
     color: #666;
-
 }
 
 .scan-message strong {
     color: #008c45;
 }
+
+
+/* スキャン結果 */
 
 .scan-result {
 
@@ -317,7 +302,6 @@ button {
     color: #008c45;
 
     min-height: 48px;
-
 }
 
 .error {
@@ -329,7 +313,6 @@ button {
     color: #d71920;
 
     font-weight: bold;
-
 }
 
 
@@ -342,7 +325,6 @@ button {
     max-height: 47vh;
 
     overflow-y: auto;
-
 }
 
 .empty {
@@ -354,7 +336,6 @@ button {
     color: #999;
 
     font-size: 17px;
-
 }
 
 .product-row {
@@ -372,7 +353,6 @@ button {
 
     border-bottom:
         1px solid #ddd;
-
 }
 
 .product-name {
@@ -380,7 +360,6 @@ button {
     font-size: 18px;
 
     font-weight: bold;
-
 }
 
 .product-code {
@@ -390,7 +369,6 @@ button {
     font-size: 12px;
 
     margin-top: 4px;
-
 }
 
 .qty {
@@ -398,7 +376,6 @@ button {
     text-align: center;
 
     font-size: 19px;
-
 }
 
 .price {
@@ -408,7 +385,6 @@ button {
     font-size: 18px;
 
     font-weight: bold;
-
 }
 
 .remove {
@@ -420,7 +396,6 @@ button {
     padding: 9px 4px;
 
     background: #eee;
-
 }
 
 
@@ -453,7 +428,6 @@ button {
 
     box-shadow:
         0 2px 5px rgba(0,0,0,0.08);
-
 }
 
 .total-count {
@@ -467,7 +441,6 @@ button {
     font-weight: bold;
 
     color: #d71920;
-
 }
 
 
@@ -489,7 +462,6 @@ button {
     font-size: 20px;
 
     font-weight: bold;
-
 }
 
 .button-orange {
@@ -497,7 +469,6 @@ button {
     background: #f58220;
 
     color: white;
-
 }
 
 .button-green {
@@ -505,7 +476,6 @@ button {
     background: #008c45;
 
     color: white;
-
 }
 
 .button-gray {
@@ -513,7 +483,6 @@ button {
     background: #e8e8e8;
 
     color: #333;
-
 }
 
 .button-red {
@@ -521,7 +490,6 @@ button {
     background: #d71920;
 
     color: white;
-
 }
 
 .bottom-buttons {
@@ -536,7 +504,6 @@ button {
     justify-content: space-between;
 
     gap: 15px;
-
 }
 
 .bottom-buttons .button {
@@ -545,7 +512,7 @@ button {
 
 
 /* =====================================================
-   支払い
+   支払い方法
 ===================================================== */
 
 .payment-layout {
@@ -553,7 +520,6 @@ button {
     max-width: 900px;
 
     margin: auto;
-
 }
 
 .payment-total {
@@ -570,7 +536,6 @@ button {
     padding: 20px;
 
     margin-bottom: 20px;
-
 }
 
 .payment-total-label {
@@ -584,7 +549,6 @@ button {
     font-weight: bold;
 
     color: #d71920;
-
 }
 
 .payment-grid {
@@ -595,7 +559,6 @@ button {
         1fr 1fr;
 
     gap: 14px;
-
 }
 
 .payment-button {
@@ -612,7 +575,6 @@ button {
     font-size: 22px;
 
     font-weight: bold;
-
 }
 
 .payment-icon {
@@ -622,7 +584,6 @@ button {
     font-size: 44px;
 
     margin-bottom: 8px;
-
 }
 
 
@@ -635,7 +596,6 @@ button {
     max-width: 600px;
 
     margin: auto;
-
 }
 
 .cash-box {
@@ -648,7 +608,6 @@ button {
     border-radius: 6px;
 
     padding: 20px;
-
 }
 
 .cash-row {
@@ -662,7 +621,6 @@ button {
     font-size: 21px;
 
     padding: 7px 0;
-
 }
 
 .cash-total {
@@ -672,7 +630,6 @@ button {
     font-weight: bold;
 
     color: #d71920;
-
 }
 
 .received {
@@ -686,7 +643,6 @@ button {
     font-weight: bold;
 
     margin-bottom: 8px;
-
 }
 
 .received-display {
@@ -714,7 +670,6 @@ button {
     font-size: 36px;
 
     font-weight: bold;
-
 }
 
 .keypad {
@@ -727,7 +682,6 @@ button {
     gap: 8px;
 
     margin-top: 12px;
-
 }
 
 .key {
@@ -744,7 +698,6 @@ button {
     font-size: 28px;
 
     font-weight: bold;
-
 }
 
 .key-clear {
@@ -756,7 +709,6 @@ button {
     width: 100%;
 
     margin-top: 12px;
-
 }
 
 
@@ -781,7 +733,6 @@ button {
     border-radius: 9px;
 
     text-align: center;
-
 }
 
 .result-title {
@@ -791,7 +742,6 @@ button {
     font-weight: bold;
 
     color: #008c45;
-
 }
 
 .result-change {
@@ -804,7 +754,6 @@ button {
     font-size: 58px;
 
     font-weight: bold;
-
 }
 
 
@@ -821,7 +770,6 @@ button {
     padding: 20px;
 
     background: #eee;
-
 }
 
 .labels-screen.active {
@@ -840,7 +788,6 @@ button {
     justify-content: space-between;
 
     align-items: center;
-
 }
 
 .labels-title {
@@ -850,12 +797,11 @@ button {
     font-weight: bold;
 
     color: #008c45;
-
 }
 
 
 /* =====================================================
-   QRとJANを別々にする
+   QRとJANを別々に表示
 ===================================================== */
 
 .code-print-grid {
@@ -870,7 +816,6 @@ button {
         repeat(2, 1fr);
 
     gap: 20px;
-
 }
 
 .code-card {
@@ -895,13 +840,10 @@ button {
     align-items: center;
 
     justify-content: center;
-
 }
 
 .code-card.jan-card {
-
     border-color: #f58220;
-
 }
 
 .code-type {
@@ -913,7 +855,6 @@ button {
     margin-bottom: 12px;
 
     color: #008c45;
-
 }
 
 .jan-card .code-type {
@@ -925,7 +866,6 @@ button {
     font-size: 22px;
 
     font-weight: bold;
-
 }
 
 .code-price {
@@ -938,7 +878,6 @@ button {
 
     margin:
         6px 0 15px;
-
 }
 
 .qr-container {
@@ -950,13 +889,10 @@ button {
 
     align-items: center;
     justify-content: center;
-
 }
 
 
-/*
-   JAN SVG
-*/
+/* JANバーコード */
 
 .jan-barcode {
 
@@ -967,7 +903,6 @@ button {
     height: 130px;
 
     display: block;
-
 }
 
 .code-number {
@@ -979,7 +914,6 @@ button {
     font-family: monospace;
 
     letter-spacing: 2px;
-
 }
 
 .code-description {
@@ -989,7 +923,6 @@ button {
     color: #666;
 
     font-size: 14px;
-
 }
 
 
@@ -1012,7 +945,6 @@ button {
         display: block;
 
         padding: 0;
-
     }
 
     .code-print-grid {
@@ -1021,7 +953,6 @@ button {
             repeat(2, 1fr);
 
         gap: 8px;
-
     }
 
     .code-card {
@@ -1032,9 +963,7 @@ button {
 
         border:
             2px solid #333;
-
     }
-
 }
 
 
@@ -1045,9 +974,7 @@ button {
 @media (max-width: 750px) {
 
     .step {
-
         font-size: 13px;
-
     }
 
     .step-number {
@@ -1056,32 +983,24 @@ button {
         height: 26px;
 
         margin-right: 4px;
-
     }
 
     .screen {
-
         padding: 12px;
-
     }
 
     .title {
-
         font-size: 23px;
-
     }
 
     .scan-layout {
-
         grid-template-columns: 1fr;
-
     }
 
     .product-row {
 
         grid-template-columns:
             1fr 45px 90px;
-
     }
 
     .product-row .remove {
@@ -1093,23 +1012,16 @@ button {
     }
 
     .bottom-buttons {
-
         flex-direction: column;
-
     }
 
     .bottom-buttons .button {
-
         width: 100%;
-
     }
 
     .code-print-grid {
-
         grid-template-columns: 1fr;
-
     }
-
 }
 
 </style>
@@ -1342,7 +1254,7 @@ button {
 
 
     <!-- =================================================
-         支払い方法
+         支払い
     ================================================== -->
 
     <section id="screenPayment"
@@ -1514,9 +1426,10 @@ button {
 
                     </div>
 
-
                 </div>
 
+
+                <!-- テンキー -->
 
                 <div class="keypad">
 
@@ -1716,7 +1629,9 @@ button {
 
 
             <div>
+
                 おつりをお受け取りください
+
             </div>
 
 
@@ -1746,7 +1661,7 @@ button {
 
 
 <!-- =====================================================
-     商品コード印刷画面
+     商品コード画面
 ===================================================== -->
 
 <section id="labelsScreen"
@@ -1805,9 +1720,8 @@ button {
    商品マスタ
 =====================================================
 
-   janには12桁を入れます。
-
-   13桁目は自動計算します。
+   janは12桁。
+   13桁目のチェックデジットは自動計算。
 
 ===================================================== */
 
@@ -1900,7 +1814,7 @@ let audioContext = null;
 
 
 /* =====================================================
-   JAN-13チェックデジット計算
+   JAN-13チェックデジット
 ===================================================== */
 
 function makeJAN13(base12) {
@@ -1910,7 +1824,9 @@ function makeJAN13(base12) {
         .replace(/\D/g, "");
 
 
-    if (base12.length !== 12) {
+    if (
+        base12.length !== 12
+    ) {
 
         throw new Error(
             "JANの元コードは12桁必要です"
@@ -1932,13 +1848,17 @@ function makeJAN13(base12) {
             Number(base12[i]);
 
 
-        if (i % 2 === 0) {
+        if (
+            i % 2 === 0
+        ) {
 
             sum += digit;
 
-        } else {
+        }
+        else {
 
-            sum += digit * 3;
+            sum +=
+                digit * 3;
 
         }
 
@@ -1949,13 +1869,16 @@ function makeJAN13(base12) {
         (10 - (sum % 10)) % 10;
 
 
-    return base12 + checkDigit;
+    return (
+        base12 +
+        checkDigit
+    );
 
 }
 
 
 /* =====================================================
-   スキャン音
+   高いスキャン音
 ===================================================== */
 
 function playScanSound() {
@@ -1995,15 +1918,19 @@ function playScanSound() {
             "sine";
 
 
+        /*
+         * 高めの「ピッ」
+         */
+
         oscillator.frequency.setValueAtTime(
-            1800,
+            3000,
             audioContext.currentTime
         );
 
 
         oscillator.frequency
             .exponentialRampToValueAtTime(
-                1100,
+                2200,
                 audioContext.currentTime + 0.08
             );
 
@@ -2029,6 +1956,7 @@ function playScanSound() {
 
 
         oscillator.start();
+
 
         oscillator.stop(
             audioContext.currentTime + 0.12
@@ -2058,7 +1986,9 @@ function findProduct(code) {
         code.trim();
 
 
-    /* QR */
+    /*
+     * QRコード
+     */
 
     if (
         products[code]
@@ -2068,14 +1998,17 @@ function findProduct(code) {
 
             code: code,
 
-            product: products[code]
+            product:
+                products[code]
 
         };
 
     }
 
 
-    /* JAN */
+    /*
+     * JANコード
+     */
 
     for (
         const qrCode in products
@@ -2095,7 +2028,8 @@ function findProduct(code) {
 
                 code: qrCode,
 
-                product: products[qrCode]
+                product:
+                    products[qrCode]
 
             };
 
@@ -2140,7 +2074,8 @@ function getCount() {
 
         (sum, item) =>
 
-            sum + item.quantity,
+            sum +
+            item.quantity,
 
         0
 
@@ -2246,7 +2181,9 @@ function updateCart() {
 
                             <div class="product-name">
 
-                                ${escapeHtml(item.name)}
+                                ${escapeHtml(
+                                    item.name
+                                )}
 
                             </div>
 
@@ -2367,9 +2304,7 @@ function clearCart() {
     if (
         cart.length === 0
     ) {
-
         return;
-
     }
 
 
@@ -2428,6 +2363,10 @@ function selectPayment(type) {
         getTotal();
 
 
+    /*
+     * 現金
+     */
+
     if (
         type === "cash"
     ) {
@@ -2456,9 +2395,9 @@ function selectPayment(type) {
 
 
     /*
-       研修用として
-       現金以外は即時完了
-    */
+     * 研修用として
+     * 現金以外は即時完了
+     */
 
     document.getElementById(
         "completeTotal"
@@ -2633,32 +2572,40 @@ function showScreen(name) {
 
     const screens = {
 
-        scan: "screenScan",
+        scan:
+            "screenScan",
 
-        payment: "screenPayment",
+        payment:
+            "screenPayment",
 
-        cash: "screenCash",
+        cash:
+            "screenCash",
 
-        complete: "screenComplete"
+        complete:
+            "screenComplete"
 
     };
 
 
     Object.values(screens)
-        .forEach(id => {
+        .forEach(
+            id => {
 
-            document.getElementById(id)
-                .classList
-                .remove("active");
+                document
+                    .getElementById(id)
+                    .classList
+                    .remove("active");
 
-        });
+            }
+        );
 
 
-    document.getElementById(
-        screens[name]
-    )
-    .classList
-    .add("active");
+    document
+        .getElementById(
+            screens[name]
+        )
+        .classList
+        .add("active");
 
 
     updateSteps(name);
@@ -2667,22 +2614,25 @@ function showScreen(name) {
 
 
 /* =====================================================
-   ステップ
+   ステップ表示
 ===================================================== */
 
 function updateSteps(name) {
 
-    document.getElementById("step1")
+    document
+        .getElementById("step1")
         .classList
         .remove("active");
 
 
-    document.getElementById("step2")
+    document
+        .getElementById("step2")
         .classList
         .remove("active");
 
 
-    document.getElementById("step3")
+    document
+        .getElementById("step3")
         .classList
         .remove("active");
 
@@ -2691,7 +2641,8 @@ function updateSteps(name) {
         name === "scan"
     ) {
 
-        document.getElementById("step1")
+        document
+            .getElementById("step1")
             .classList
             .add("active");
 
@@ -2703,7 +2654,8 @@ function updateSteps(name) {
         name === "cash"
     ) {
 
-        document.getElementById("step2")
+        document
+            .getElementById("step2")
             .classList
             .add("active");
 
@@ -2714,7 +2666,8 @@ function updateSteps(name) {
         name === "complete"
     ) {
 
-        document.getElementById("step3")
+        document
+            .getElementById("step3")
             .classList
             .add("active");
 
@@ -2782,9 +2735,8 @@ function onScanSuccess(decodedText) {
 
 
     /*
-       同じ商品を
-       1.5秒以内に連続読み取りしない
-    */
+     * 同じコードの連続読み取り防止
+     */
 
     if (
 
@@ -2824,25 +2776,35 @@ function onScanSuccess(decodedText) {
     }
 
 
-    /* ★ ピッ */
+    /*
+     * ==========================================
+     * 高い音を鳴らす
+     * ==========================================
+     */
 
     playScanSound();
 
 
-    /* 商品追加 */
+    /*
+     * 商品追加
+     */
 
     addProduct(
         result.code
     );
 
 
-    /* 表示 */
+    /*
+     * ==========================================
+     * 「ピッ♪」は表示しない
+     *
+     * 商品名だけ表示
+     * ==========================================
+     */
 
     document.getElementById(
         "scanResult"
     ).textContent =
-
-        "ピッ♪　" +
 
         result.product.name +
 
@@ -2862,12 +2824,6 @@ function onScanSuccess(decodedText) {
 
 /* =====================================================
    カメラ自動起動
-=====================================================
-
-   user
-   ↓
-   内側カメラ
-
 ===================================================== */
 
 async function startScanner() {
@@ -2885,8 +2841,11 @@ async function startScanner() {
             fps: 10,
 
             qrbox: {
+
                 width: 280,
+
                 height: 180
+
             },
 
             aspectRatio:
@@ -2894,6 +2853,12 @@ async function startScanner() {
 
         };
 
+
+        /*
+         * facingMode:user
+         *
+         * iPadの内側カメラ
+         */
 
         await scanner.start(
 
@@ -2909,9 +2874,9 @@ async function startScanner() {
             function() {
 
                 /*
-                   読み取り中の
-                   一時的エラーは無視
-                */
+                 * 読み取り中の
+                 * 一時エラーは無視
+                 */
 
             }
 
@@ -2921,7 +2886,9 @@ async function startScanner() {
     }
     catch(error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
 
 
         document.getElementById(
@@ -2937,7 +2904,7 @@ async function startScanner() {
 
 
 /* =====================================================
-   QR・JAN商品コード表示
+   QR・JAN表示
 ===================================================== */
 
 function showLabels() {
@@ -2966,11 +2933,9 @@ function showLabels() {
             products[code];
 
 
-        /*
-         * ==========================================
-         * QRカード
-         * ==========================================
-         */
+        /* =============================================
+           QRカード
+        ============================================= */
 
         const qrCard =
             document.createElement(
@@ -2989,7 +2954,9 @@ function showLabels() {
             </div>
 
             <div class="code-product-name">
-                ${escapeHtml(product.name)}
+                ${escapeHtml(
+                    product.name
+                )}
             </div>
 
             <div class="code-price">
@@ -3006,14 +2973,15 @@ function showLabels() {
             </div>
 
             <div class="code-description">
-                QRコードを
-                セルフレジで読み取ってください
+                QRコード
             </div>
 
         `;
 
 
-        grid.appendChild(qrCard);
+        grid.appendChild(
+            qrCard
+        );
 
 
         /*
@@ -3054,11 +3022,9 @@ function showLabels() {
         }
 
 
-        /*
-         * ==========================================
-         * JANカード
-         * ==========================================
-         */
+        /* =============================================
+           JANカード
+        ============================================= */
 
         const janCard =
             document.createElement(
@@ -3077,7 +3043,9 @@ function showLabels() {
             </div>
 
             <div class="code-product-name">
-                ${escapeHtml(product.name)}
+                ${escapeHtml(
+                    product.name
+                )}
             </div>
 
             <div class="code-price">
@@ -3095,18 +3063,19 @@ function showLabels() {
             </div>
 
             <div class="code-description">
-                JAN-13バーコードを
-                セルフレジで読み取ってください
+                JAN-13
             </div>
 
         `;
 
 
-        grid.appendChild(janCard);
+        grid.appendChild(
+            janCard
+        );
 
 
         /*
-         * JAN-13を自動計算
+         * JAN-13作成
          */
 
         let jan13;
@@ -3143,9 +3112,7 @@ function showLabels() {
 
 
         /*
-         * ==========================================
-         * JANバーコード生成
-         * ==========================================
+         * JANバーコード作成
          */
 
         try {
@@ -3160,25 +3127,35 @@ function showLabels() {
 
                 {
 
-                    format: "ean13",
+                    format:
+                        "ean13",
 
-                    width: 3,
+                    width:
+                        3,
 
-                    height: 100,
+                    height:
+                        100,
 
-                    displayValue: true,
+                    displayValue:
+                        true,
 
-                    fontSize: 18,
+                    fontSize:
+                        18,
 
-                    fontOptions: "bold",
+                    fontOptions:
+                        "bold",
 
-                    textMargin: 8,
+                    textMargin:
+                        8,
 
-                    margin: 10,
+                    margin:
+                        10,
 
-                    lineColor: "#000000",
+                    lineColor:
+                        "#000000",
 
-                    background: "#ffffff"
+                    background:
+                        "#ffffff"
 
                 }
 
@@ -3190,7 +3167,6 @@ function showLabels() {
                 code,
                 jan13
             );
-
 
         }
         catch(error) {
@@ -3241,7 +3217,7 @@ function hideLabels() {
 
 
 /* =====================================================
-   起動
+   起動時
 ===================================================== */
 
 window.addEventListener(
@@ -3251,8 +3227,8 @@ window.addEventListener(
         updateCart();
 
         /*
-           iPadの内側カメラを自動起動
-        */
+         * iPad内側カメラを自動起動
+         */
 
         startScanner();
 
@@ -3260,6 +3236,7 @@ window.addEventListener(
 );
 
 </script>
+
 
 </body>
 
