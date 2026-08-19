@@ -11,24 +11,23 @@
                maximum-scale=1.0,
                user-scalable=no">
 
-<title>研修用セルフレジ</title>
-
+<title>セルフレジ研修</title>
 
 <!-- QR・バーコード読み取り -->
 <script src="https://unpkg.com/html5-qrcode"></script>
 
-<!-- QRコード作成 -->
+<!-- QRコード生成 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-<!-- JANバーコード作成 -->
+<!-- JANバーコード生成 -->
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
 
 <style>
 
-/* ==================================================
-   基本設定
-================================================== */
+/* ==============================
+   基本
+============================== */
 
 * {
     box-sizing: border-box;
@@ -39,6 +38,7 @@ html,
 body {
     margin: 0;
     padding: 0;
+
     width: 100%;
     min-height: 100%;
 
@@ -54,36 +54,32 @@ body {
     color: #333;
 }
 
+body {
+    overflow-x: hidden;
+}
+
 button {
     font-family: inherit;
     cursor: pointer;
 }
 
-.app {
-    min-height: 100vh;
-}
 
-
-/* ==================================================
+/* ==============================
    上部ステップ
-================================================== */
+============================== */
 
 .steps {
-
     width: 100%;
     height: 68px;
 
     display: flex;
 
-    background: #ffffff;
+    background: #fff;
 
-    border-bottom:
-        1px solid #cccccc;
-
+    border-bottom: 1px solid #ccc;
 }
 
 .step {
-
     flex: 1;
 
     display: flex;
@@ -93,37 +89,31 @@ button {
 
     position: relative;
 
+    color: #888;
+
     font-size: 18px;
     font-weight: bold;
-
-    color: #888888;
-
 }
 
 .step.active {
-
     color: #1685b8;
-
 }
 
 .step.active::after {
-
     content: "";
 
     position: absolute;
 
-    bottom: 0;
     left: 10%;
-    width: 80%;
+    bottom: 0;
 
+    width: 80%;
     height: 5px;
 
     background: #1685b8;
-
 }
 
 .step-number {
-
     width: 32px;
     height: 32px;
 
@@ -136,122 +126,95 @@ button {
 
     border-radius: 50%;
 
-    background: #dddddd;
+    background: #ddd;
 
-    color: #666666;
-
+    color: #666;
 }
 
 .step.active .step-number {
-
     background: #1685b8;
-    color: white;
-
+    color: #fff;
 }
 
 
-/* ==================================================
+/* ==============================
    画面
-================================================== */
+============================== */
 
 .screen {
-
     display: none;
 
     min-height:
         calc(100vh - 68px);
 
     padding: 18px;
-
 }
 
 .screen.active {
-
     display: block;
-
 }
 
 
-/* ==================================================
+/* ==============================
    タイトル
-================================================== */
+============================== */
 
 .title {
-
     text-align: center;
 
     font-size: 28px;
-
     font-weight: bold;
 
-    margin:
-        5px 0 20px;
-
+    margin: 5px 0 20px;
 }
 
 
-/* ==================================================
+/* ==============================
    カード
-================================================== */
+============================== */
 
 .card {
+    background: #fff;
 
-    background: white;
-
-    border:
-        1px solid #cccccc;
+    border: 1px solid #ccc;
 
     border-radius: 9px;
 
     padding: 18px;
+}
 
+.card-title {
+    font-size: 21px;
+    font-weight: bold;
+
+    margin-bottom: 12px;
 }
 
 
-/* ==================================================
-   スキャン画面
-================================================== */
+/* ==============================
+   スキャン
+============================== */
 
 .scan-layout {
-
     max-width: 1100px;
 
     margin: auto;
 
     display: grid;
 
-    grid-template-columns:
-        1fr 1fr;
+    grid-template-columns: 1fr 1fr;
 
     gap: 18px;
-
 }
-
-.card-title {
-
-    font-size: 21px;
-
-    font-weight: bold;
-
-    margin-bottom: 12px;
-
-}
-
-
-/* カメラ */
 
 #reader {
-
     width: 100%;
-
     max-width: 500px;
 
     margin: auto;
-
 }
 
 .scan-message {
-
     text-align: center;
 
     margin-top: 12px;
@@ -259,20 +222,13 @@ button {
     font-size: 17px;
 
     color: #666;
-
 }
 
 .scan-message strong {
-
     color: #1685b8;
-
 }
 
-
-/* エラー */
-
 .error {
-
     margin-top: 10px;
 
     text-align: center;
@@ -280,34 +236,28 @@ button {
     color: #d00000;
 
     font-weight: bold;
-
 }
 
 
-/* ==================================================
-   商品一覧
-================================================== */
+/* ==============================
+   カート
+============================== */
 
 .cart {
-
     max-height: 48vh;
 
     overflow-y: auto;
-
 }
 
 .empty {
-
     text-align: center;
 
     padding: 40px 10px;
 
     color: #888;
-
 }
 
 .product-row {
-
     display: grid;
 
     grid-template-columns:
@@ -322,199 +272,148 @@ button {
 
     padding: 13px 0;
 
-    border-bottom:
-        1px solid #dddddd;
-
+    border-bottom: 1px solid #ddd;
 }
 
 .product-name {
-
     font-size: 18px;
-
     font-weight: bold;
-
 }
 
 .product-code {
-
     color: #888;
 
     font-size: 12px;
 
     margin-top: 3px;
-
 }
 
 .qty {
-
     text-align: center;
 
     font-size: 19px;
-
 }
 
 .price {
-
     text-align: right;
 
     font-size: 18px;
-
     font-weight: bold;
-
 }
 
 .remove {
-
     border: 0;
 
     border-radius: 6px;
 
     padding: 8px 5px;
 
-    background: #eeeeee;
-
+    background: #eee;
 }
 
 
-/* ==================================================
+/* ==============================
    合計
-================================================== */
+============================== */
 
 .total-box {
-
     max-width: 1100px;
 
-    margin:
-        15px auto 0;
+    margin: 15px auto 0;
 
-    padding:
-        16px 22px;
+    padding: 16px 22px;
 
     display: flex;
 
-    justify-content:
-        space-between;
-
+    justify-content: space-between;
     align-items: center;
 
-    background: white;
+    background: #fff;
 
-    border:
-        1px solid #cccccc;
+    border: 1px solid #ccc;
 
     border-radius: 8px;
-
 }
 
 .total-count {
-
     font-size: 21px;
-
 }
 
 .total-price {
-
     font-size: 38px;
 
     font-weight: bold;
-
 }
 
 
-/* ==================================================
+/* ==============================
    ボタン
-================================================== */
+============================== */
 
 .button {
-
     min-height: 64px;
 
-    padding:
-        10px 22px;
+    padding: 10px 22px;
 
     border: 0;
 
     border-radius: 8px;
 
     font-size: 20px;
-
     font-weight: bold;
-
 }
 
 .button-blue {
-
     background: #1685b8;
-
     color: white;
-
 }
 
 .button-green {
-
     background: #159447;
-
     color: white;
-
 }
 
 .button-gray {
-
     background: #e5e5e5;
-
     color: #333;
-
 }
 
 .button-red {
-
     background: #d33c3c;
-
     color: white;
-
 }
 
 .bottom-buttons {
-
     max-width: 1100px;
 
-    margin:
-        15px auto 0;
+    margin: 15px auto 0;
 
     display: flex;
 
-    justify-content:
-        space-between;
+    justify-content: space-between;
 
     gap: 15px;
-
 }
 
 .bottom-buttons .button {
-
     min-width: 170px;
-
 }
 
 
-/* ==================================================
-   支払い方法
-================================================== */
+/* ==============================
+   支払い
+============================== */
 
 .payment-layout {
-
     max-width: 900px;
 
     margin: auto;
-
 }
 
 .payment-total {
+    background: #fff;
 
-    background: white;
-
-    border:
-        1px solid #cccccc;
+    border: 1px solid #ccc;
 
     border-radius: 8px;
 
@@ -523,44 +422,35 @@ button {
     padding: 20px;
 
     margin-bottom: 20px;
-
 }
 
 .payment-total-label {
-
     font-size: 18px;
-
 }
 
 .payment-total-price {
-
     font-size: 42px;
 
     font-weight: bold;
 
     margin-top: 5px;
-
 }
 
 .payment-grid {
-
     display: grid;
 
     grid-template-columns:
         1fr 1fr;
 
     gap: 14px;
-
 }
 
 .payment-button {
-
     min-height: 135px;
 
     background: white;
 
-    border:
-        3px solid #d27b54;
+    border: 3px solid #d27b54;
 
     border-radius: 10px;
 
@@ -569,92 +459,69 @@ button {
     font-weight: bold;
 
     color: #333;
-
 }
 
 .payment-button:active {
-
     background: #fff3ec;
-
 }
 
 .payment-icon {
-
     display: block;
 
     font-size: 42px;
 
     margin-bottom: 7px;
-
 }
 
 
-/* ==================================================
+/* ==============================
    現金
-================================================== */
+============================== */
 
 .cash-layout {
-
     max-width: 600px;
 
     margin: auto;
-
 }
 
 .cash-box {
-
     background: white;
 
-    border:
-        1px solid #cccccc;
+    border: 1px solid #ccc;
 
     border-radius: 8px;
 
     padding: 20px;
-
 }
 
 .cash-row {
-
     display: flex;
 
-    justify-content:
-        space-between;
-
+    justify-content: space-between;
     align-items: center;
 
     font-size: 21px;
 
     padding: 7px 0;
-
 }
 
 .cash-total {
-
     font-size: 31px;
-
     font-weight: bold;
-
 }
 
 .received {
-
     margin-top: 15px;
-
 }
 
 .received-label {
-
     font-size: 18px;
-
     font-weight: bold;
 
     margin-bottom: 8px;
-
 }
 
 .received-display {
-
     width: 100%;
 
     height: 72px;
@@ -662,14 +529,11 @@ button {
     display: flex;
 
     align-items: center;
-
     justify-content: flex-end;
 
-    padding:
-        8px 15px;
+    padding: 8px 15px;
 
-    border:
-        2px solid #999999;
+    border: 2px solid #999;
 
     border-radius: 7px;
 
@@ -678,11 +542,9 @@ button {
     font-size: 36px;
 
     font-weight: bold;
-
 }
 
 .keypad {
-
     display: grid;
 
     grid-template-columns:
@@ -691,15 +553,12 @@ button {
     gap: 8px;
 
     margin-top: 12px;
-
 }
 
 .key {
-
     height: 68px;
 
-    border:
-        1px solid #aaaaaa;
+    border: 1px solid #aaa;
 
     border-radius: 7px;
 
@@ -708,139 +567,107 @@ button {
     font-size: 28px;
 
     font-weight: bold;
-
 }
 
 .key:active {
-
-    background: #dddddd;
-
+    background: #ddd;
 }
 
 .key-clear {
-
-    background: #eeeeee;
-
+    background: #eee;
 }
 
 .cash-pay {
-
     width: 100%;
 
     margin-top: 12px;
-
 }
 
 
-/* ==================================================
-   完了画面
-================================================== */
+/* ==============================
+   完了
+============================== */
 
 .result-box {
-
     max-width: 650px;
 
-    margin:
-        20px auto;
+    margin: 20px auto;
 
     padding: 25px;
 
     background: white;
 
-    border:
-        3px solid #159447;
+    border: 3px solid #159447;
 
     border-radius: 10px;
 
     text-align: center;
-
 }
 
 .result-title {
-
     font-size: 25px;
 
     font-weight: bold;
-
 }
 
 .result-change {
-
-    margin:
-        10px 0;
+    margin: 10px 0;
 
     color: #159447;
 
     font-size: 58px;
 
     font-weight: bold;
-
 }
 
 .result-message {
-
     font-size: 20px;
-
 }
 
 .complete-buttons {
-
     max-width: 650px;
 
     margin: auto;
-
 }
 
 
-/* ==================================================
-   商品ラベル画面
-================================================== */
+/* ==============================
+   商品カード
+============================== */
 
 .labels-screen {
-
     display: none;
 
     min-height: 100vh;
 
     padding: 20px;
 
-    background: #eeeeee;
-
+    background: #eee;
 }
 
 .labels-screen.active {
-
     display: block;
-
 }
 
 .labels-header {
-
     max-width: 1100px;
 
     margin: auto;
 
     display: flex;
 
-    justify-content:
-        space-between;
-
+    justify-content: space-between;
     align-items: center;
 
     margin-bottom: 20px;
-
 }
 
 .labels-title {
-
     font-size: 28px;
-
     font-weight: bold;
-
 }
 
 .labels-grid {
-
     max-width: 1100px;
 
     margin: auto;
@@ -851,206 +678,156 @@ button {
         repeat(2, 1fr);
 
     gap: 15px;
-
 }
 
 .product-label {
-
     min-height: 310px;
 
     padding: 15px;
 
     background: white;
 
-    border:
-        2px solid #333;
+    border: 2px solid #333;
 
     border-radius: 6px;
 
     text-align: center;
 
     break-inside: avoid;
-
 }
 
 .label-name {
-
     font-size: 22px;
 
     font-weight: bold;
 
     margin-bottom: 5px;
-
 }
 
 .label-price {
-
     font-size: 28px;
 
     font-weight: bold;
 
     margin-bottom: 8px;
-
 }
 
 .label-code {
-
     font-size: 15px;
 
     color: #555;
 
     margin-bottom: 8px;
-
 }
 
 .label-qr {
-
     display: flex;
 
     justify-content: center;
 
     margin: 5px auto;
-
 }
 
 .label-barcode {
-
     width: 90%;
 
     max-width: 350px;
 
     height: 70px;
-
 }
 
 .label-jan {
-
     font-size: 14px;
 
     letter-spacing: 2px;
-
 }
 
 
-/* ==================================================
+/* ==============================
    印刷
-================================================== */
+============================== */
 
 @media print {
 
     body {
-
         background: white;
-
     }
 
     .labels-header {
-
         display: none;
-
     }
 
     .labels-screen {
-
         display: block;
 
         padding: 0;
-
     }
 
     .labels-grid {
-
         grid-template-columns:
             repeat(2, 1fr);
 
         gap: 8px;
-
     }
 
     .product-label {
-
         page-break-inside: avoid;
-
     }
-
 }
 
 
-/* ==================================================
-   タブレット・スマホ
-================================================== */
+/* ==============================
+   iPad / スマホ
+============================== */
 
 @media (max-width: 750px) {
 
     .step {
-
         font-size: 13px;
-
     }
 
     .step-number {
-
         width: 25px;
         height: 25px;
 
         margin-right: 4px;
-
     }
 
     .scan-layout {
-
-        grid-template-columns:
-            1fr;
-
+        grid-template-columns: 1fr;
     }
 
     .payment-grid {
-
         grid-template-columns:
             1fr 1fr;
-
     }
 
     .product-row {
-
         grid-template-columns:
             1fr
             45px
             90px;
-
     }
 
     .product-row .remove {
-
         display: none;
-
     }
 
     .total-price {
-
         font-size: 30px;
-
     }
 
     .bottom-buttons {
-
         flex-direction: column;
-
     }
 
     .bottom-buttons .button {
-
         width: 100%;
-
     }
 
     .labels-grid {
-
-        grid-template-columns:
-            1fr;
-
+        grid-template-columns: 1fr;
     }
-
 }
 
 </style>
@@ -1061,299 +838,194 @@ button {
 <body>
 
 
-<div class="app">
-
-
-<!-- =================================================
-     上部ステップ
+<!-- ==================================================
+     レジ本体
 ================================================== -->
 
-<div class="steps">
-
-    <div id="step1"
-         class="step active">
-
-        <span class="step-number">
-            1
-        </span>
-
-        商品スキャン
-
-    </div>
+<div id="app">
 
 
-    <div id="step2"
-         class="step">
+    <!-- ステップ -->
 
-        <span class="step-number">
-            2
-        </span>
-
-        お支払い
-
-    </div>
+    <div class="steps">
 
 
-    <div id="step3"
-         class="step">
+        <div id="step1"
+             class="step active">
 
-        <span class="step-number">
-            3
-        </span>
+            <span class="step-number">
+                1
+            </span>
 
-        完了
-
-    </div>
-
-</div>
-
-
-<!-- =================================================
-     商品スキャン
-================================================== -->
-
-<section id="screenScan"
-         class="screen active">
-
-
-    <div class="title">
-
-        商品をスキャンしてください
-
-    </div>
-
-
-    <div class="scan-layout">
-
-
-        <!-- カメラ -->
-
-        <div class="card">
-
-            <div class="card-title">
-
-                バーコードをスキャン
-
-            </div>
-
-
-            <div id="reader"></div>
-
-
-            <div class="scan-message">
-
-                <strong>
-                    QRコード・JANコード対応
-                </strong>
-
-                <br>
-
-                商品のコードを
-                カメラに向けてください
-
-            </div>
-
-
-            <div id="scanError"
-                 class="error">
-
-            </div>
+            商品スキャン
 
         </div>
 
 
-        <!-- 商品一覧 -->
+        <div id="step2"
+             class="step">
 
-        <div class="card">
+            <span class="step-number">
+                2
+            </span>
 
-            <div class="card-title">
+            お支払い
 
-                お買い上げ商品
-
-            </div>
+        </div>
 
 
-            <div id="cart"
-                 class="cart">
+        <div id="step3"
+             class="step">
 
-                <div class="empty">
+            <span class="step-number">
+                3
+            </span>
 
-                    商品をスキャンしてください
+            完了
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==================================================
+         スキャン画面
+    ================================================== -->
+
+    <section id="screenScan"
+             class="screen active">
+
+
+        <div class="title">
+
+            商品をスキャンしてください
+
+        </div>
+
+
+        <div class="scan-layout">
+
+
+            <!-- カメラ -->
+
+            <div class="card">
+
+
+                <div class="card-title">
+
+                    バーコードをスキャン
 
                 </div>
 
-            </div>
 
-        </div>
-
-    </div>
+                <div id="reader"></div>
 
 
-    <!-- 合計 -->
+                <div class="scan-message">
 
-    <div class="total-box">
+                    <strong>
+                        QRコード・JANコード対応
+                    </strong>
 
-        <div class="total-count">
+                    <br>
 
-            合計
+                    商品のコードを
+                    カメラに向けてください
 
-            <strong id="totalCount">
-                0
-            </strong>
-
-            点
-
-        </div>
+                </div>
 
 
-        <div class="total-price">
+                <div id="scanError"
+                     class="error">
 
-            ￥<span id="total">
-                0
-            </span>
+                </div>
 
-        </div>
-
-    </div>
-
-
-    <!-- ボタン -->
-
-    <div class="bottom-buttons">
-
-        <button
-            class="button button-gray"
-            onclick="clearCart()">
-
-            商品を全部削除
-
-        </button>
-
-
-        <button
-            class="button button-blue"
-            onclick="goPayment()">
-
-            お支払いへ
-
-        </button>
-
-    </div>
-
-
-    <div class="bottom-buttons">
-
-        <button
-            class="button button-gray"
-            onclick="showLabels()">
-
-            商品カードを表示・印刷
-
-        </button>
-
-    </div>
-
-
-</section>
-
-
-<!-- =================================================
-     支払い方法
-================================================== -->
-
-<section id="screenPayment"
-         class="screen">
-
-
-    <div class="title">
-
-        お支払い方法を選択してください
-
-    </div>
-
-
-    <div class="payment-layout">
-
-
-        <div class="payment-total">
-
-            <div class="payment-total-label">
-
-                お買い上げ金額
 
             </div>
 
 
-            <div class="payment-total-price">
+            <!-- カート -->
 
-                ￥<span id="paymentTotal">
+            <div class="card">
+
+
+                <div class="card-title">
+
+                    お買い上げ商品
+
+                </div>
+
+
+                <div id="cart"
+                     class="cart">
+
+
+                    <div class="empty">
+
+                        商品をスキャンしてください
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- 合計 -->
+
+        <div class="total-box">
+
+
+            <div class="total-count">
+
+                合計
+
+                <strong id="totalCount">
+                    0
+                </strong>
+
+                点
+
+            </div>
+
+
+            <div class="total-price">
+
+                ￥<span id="total">
                     0
                 </span>
 
             </div>
 
+
         </div>
 
 
-        <div class="payment-grid">
+        <!-- 操作 -->
 
+        <div class="bottom-buttons">
 
-            <!-- 現金 -->
 
             <button
-                class="payment-button"
-                onclick="selectPayment('cash')">
+                class="button button-gray"
+                onclick="clearCart()">
 
-                <span class="payment-icon">
-                    💴
-                </span>
-
-                現金
+                商品を全部削除
 
             </button>
 
 
-            <!-- クレジット -->
-
             <button
-                class="payment-button"
-                onclick="selectPayment('credit')">
+                class="button button-blue"
+                onclick="goPayment()">
 
-                <span class="payment-icon">
-                    💳
-                </span>
-
-                クレジットカード
-
-            </button>
-
-
-            <!-- 電子マネー -->
-
-            <button
-                class="payment-button"
-                onclick="selectPayment('electronic')">
-
-                <span class="payment-icon">
-                    📱
-                </span>
-
-                電子マネー
-
-            </button>
-
-
-            <!-- その他 -->
-
-            <button
-                class="payment-button"
-                onclick="selectPayment('other')">
-
-                <span class="payment-icon">
-                    🔵
-                </span>
-
-                その他
+                お支払いへ
 
             </button>
 
@@ -1363,338 +1035,443 @@ button {
 
         <div class="bottom-buttons">
 
+
             <button
                 class="button button-gray"
-                onclick="showScreen('scan')">
+                onclick="showLabels()">
 
-                戻る
+                商品カードを表示・印刷
 
             </button>
 
+
         </div>
 
-    </div>
 
-</section>
-
-
-<!-- =================================================
-     現金
-================================================== -->
-
-<section id="screenCash"
-         class="screen">
+    </section>
 
 
-    <div class="title">
+    <!-- ==================================================
+         支払い方法
+    ================================================== -->
 
-        現金でお支払い
-
-    </div>
-
-
-    <div class="cash-layout">
+    <section id="screenPayment"
+             class="screen">
 
 
-        <div class="cash-box">
+        <div class="title">
+
+            お支払い方法を選択してください
+
+        </div>
 
 
-            <div class="cash-row">
-
-                <span>
-                    合計
-                </span>
+        <div class="payment-layout">
 
 
-                <span class="cash-total">
+            <div class="payment-total">
 
-                    ￥<span id="cashTotal">
+
+                <div class="payment-total-label">
+
+                    お買い上げ金額
+
+                </div>
+
+
+                <div class="payment-total-price">
+
+                    ￥<span id="paymentTotal">
                         0
                     </span>
 
+                </div>
+
+
+            </div>
+
+
+            <div class="payment-grid">
+
+
+                <button
+                    class="payment-button"
+                    onclick="selectPayment('cash')">
+
+                    <span class="payment-icon">
+                        💴
+                    </span>
+
+                    現金
+
+                </button>
+
+
+                <button
+                    class="payment-button"
+                    onclick="selectPayment('credit')">
+
+                    <span class="payment-icon">
+                        💳
+                    </span>
+
+                    クレジットカード
+
+                </button>
+
+
+                <button
+                    class="payment-button"
+                    onclick="selectPayment('electronic')">
+
+                    <span class="payment-icon">
+                        📱
+                    </span>
+
+                    電子マネー
+
+                </button>
+
+
+                <button
+                    class="payment-button"
+                    onclick="selectPayment('other')">
+
+                    <span class="payment-icon">
+                        🔵
+                    </span>
+
+                    その他
+
+                </button>
+
+
+            </div>
+
+
+            <div class="bottom-buttons">
+
+
+                <button
+                    class="button button-gray"
+                    onclick="showScreen('scan')">
+
+                    戻る
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ==================================================
+         現金
+    ================================================== -->
+
+    <section id="screenCash"
+             class="screen">
+
+
+        <div class="title">
+
+            現金でお支払い
+
+        </div>
+
+
+        <div class="cash-layout">
+
+
+            <div class="cash-box">
+
+
+                <div class="cash-row">
+
+
+                    <span>
+                        合計
+                    </span>
+
+
+                    <span class="cash-total">
+
+                        ￥<span id="cashTotal">
+                            0
+                        </span>
+
+                    </span>
+
+
+                </div>
+
+
+                <div class="received">
+
+
+                    <div class="received-label">
+
+                        お預かり金額
+
+                    </div>
+
+
+                    <div id="received"
+                         class="received-display">
+
+                        0
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- テンキー -->
+
+                <div class="keypad">
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('1')">
+                        1
+                    </button>
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('2')">
+                        2
+                    </button>
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('3')">
+                        3
+                    </button>
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('4')">
+                        4
+                    </button>
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('5')">
+                        5
+                    </button>
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('6')">
+                        6
+                    </button>
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('7')">
+                        7
+                    </button>
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('8')">
+                        8
+                    </button>
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('9')">
+                        9
+                    </button>
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('0')">
+                        0
+                    </button>
+
+
+                    <button
+                        class="key"
+                        onclick="keyPress('00')">
+                        00
+                    </button>
+
+
+                    <button
+                        class="key key-clear"
+                        onclick="clearReceived()">
+
+                        訂正
+
+                    </button>
+
+
+                </div>
+
+
+                <div id="cashError"
+                     class="error">
+
+                </div>
+
+
+                <button
+                    class="button button-green cash-pay"
+                    onclick="payCash()">
+
+                    お支払い
+
+                </button>
+
+
+                <button
+                    class="button button-gray cash-pay"
+                    onclick="showScreen('payment')">
+
+                    戻る
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ==================================================
+         完了
+    ================================================== -->
+
+    <section id="screenComplete"
+             class="screen">
+
+
+        <div class="title">
+
+            お支払い完了
+
+        </div>
+
+
+        <div class="result-box">
+
+
+            <div class="result-title">
+
+                お支払いありがとうございます
+
+            </div>
+
+
+            <div style="margin-top:20px;">
+
+                お買い上げ金額
+
+            </div>
+
+
+            <div style="
+                font-size:30px;
+                font-weight:bold;
+            ">
+
+                ￥<span id="completeTotal">
+                    0
                 </span>
 
             </div>
 
 
-            <div class="received">
+            <div style="margin-top:15px;">
+
+                お預かり
+
+            </div>
 
 
-                <div class="received-label">
+            <div style="
+                font-size:30px;
+                font-weight:bold;
+            ">
 
-                    お預かり金額
-
-                </div>
-
-
-                <div id="received"
-                     class="received-display">
-
+                ￥<span id="completeReceived">
                     0
-
-                </div>
+                </span>
 
             </div>
 
 
-            <!-- テンキー -->
+            <div style="margin-top:20px;">
 
-            <div class="keypad">
+                おつり
 
-
-                <button
-                    class="key"
-                    onclick="keyPress('1')">
-
-                    1
-
-                </button>
+            </div>
 
 
-                <button
-                    class="key"
-                    onclick="keyPress('2')">
+            <div class="result-change">
 
-                    2
-
-                </button>
-
-
-                <button
-                    class="key"
-                    onclick="keyPress('3')">
-
-                    3
-
-                </button>
-
-
-                <button
-                    class="key"
-                    onclick="keyPress('4')">
-
-                    4
-
-                </button>
-
-
-                <button
-                    class="key"
-                    onclick="keyPress('5')">
-
-                    5
-
-                </button>
-
-
-                <button
-                    class="key"
-                    onclick="keyPress('6')">
-
-                    6
-
-                </button>
-
-
-                <button
-                    class="key"
-                    onclick="keyPress('7')">
-
-                    7
-
-                </button>
-
-
-                <button
-                    class="key"
-                    onclick="keyPress('8')">
-
-                    8
-
-                </button>
-
-
-                <button
-                    class="key"
-                    onclick="keyPress('9')">
-
-                    9
-
-                </button>
-
-
-                <button
-                    class="key"
-                    onclick="keyPress('0')">
-
+                ￥<span id="change">
                     0
-
-                </button>
-
-
-                <button
-                    class="key"
-                    onclick="keyPress('00')">
-
-                    00
-
-                </button>
-
-
-                <button
-                    class="key key-clear"
-                    onclick="clearReceived()">
-
-                    訂正
-
-                </button>
-
+                </span>
 
             </div>
 
 
-            <div id="cashError"
-                 class="error">
+            <div class="result-message">
+
+                おつりをお受け取りください
 
             </div>
+
+
+        </div>
+
+
+        <div class="complete-buttons">
 
 
             <button
-                class="button button-green cash-pay"
-                onclick="payCash()">
+                class="button button-blue"
+                style="width:100%;"
+                onclick="newCustomer()">
 
-                お支払い
-
-            </button>
-
-
-            <button
-                class="button button-gray cash-pay"
-                onclick="showScreen('payment')">
-
-                戻る
+                次のお客様へ
 
             </button>
 
 
         </div>
 
-    </div>
 
-</section>
-
-
-<!-- =================================================
-     完了
-================================================== -->
-
-<section id="screenComplete"
-         class="screen">
-
-
-    <div class="title">
-
-        お支払い完了
-
-    </div>
-
-
-    <div class="result-box">
-
-
-        <div class="result-title">
-
-            お支払いありがとうございます
-
-        </div>
-
-
-        <div style="margin-top:20px;">
-
-            お買い上げ金額
-
-        </div>
-
-
-        <div style="
-            font-size:30px;
-            font-weight:bold;
-        ">
-
-            ￥<span id="completeTotal">
-                0
-            </span>
-
-        </div>
-
-
-        <div style="margin-top:15px;">
-
-            お預かり
-
-        </div>
-
-
-        <div style="
-            font-size:30px;
-            font-weight:bold;
-        ">
-
-            ￥<span id="completeReceived">
-                0
-            </span>
-
-        </div>
-
-
-        <div style="margin-top:20px;">
-
-            おつり
-
-        </div>
-
-
-        <div class="result-change">
-
-            ￥<span id="change">
-                0
-            </span>
-
-        </div>
-
-
-        <div class="result-message">
-
-            おつりをお受け取りください
-
-        </div>
-
-    </div>
-
-
-    <div class="complete-buttons">
-
-
-        <button
-            class="button button-blue"
-            style="width:100%;"
-            onclick="newCustomer()">
-
-            次のお客様へ
-
-        </button>
-
-
-    </div>
-
-</section>
+    </section>
 
 
 </div>
 
 
-<!-- =================================================
-     商品ラベル画面
+<!-- ==================================================
+     商品カード画面
 ================================================== -->
 
 <section id="labelsScreen"
@@ -1713,6 +1490,7 @@ button {
 
         <div>
 
+
             <button
                 class="button button-blue"
                 onclick="window.print()">
@@ -1730,7 +1508,9 @@ button {
 
             </button>
 
+
         </div>
+
 
     </div>
 
@@ -1744,20 +1524,25 @@ button {
 </section>
 
 
+
 <script>
 
 /* ==========================================================
    商品マスタ
 ==========================================================
 
-   QRコードには A001 などを入れます。
+   QRコードには商品コード
 
-   JANコードには下記の13桁を使用します。
+   例：
+   A001
 
-   ※すべて研修用の架空JANコードです。
+   JANには下記の13桁を使用します。
+
+   ※研修用の架空JANコードです。
 ========================================================== */
 
 const products = {
+
 
     "A001": {
 
@@ -1866,17 +1651,19 @@ const products = {
 
         jan: "4900000000106"
 
-    }
+    },
+
 
     "A011": {
 
-    name: "袋",
+        name: "袋",
 
-    price: 5,
+        price: 5,
 
-    jan: "4900000000113"
+        jan: "4900000000113"
 
-}
+    }
+
 
 };
 
@@ -1898,12 +1685,6 @@ let lastScanTime = 0;
 
 /* ==========================================================
    商品検索
-
-   QRなら A001
-
-   JANなら 4900000000016
-
-   どちらでも同じ商品を返します。
 ========================================================== */
 
 function findProduct(code) {
@@ -1912,9 +1693,10 @@ function findProduct(code) {
     code = code.trim();
 
 
-    /* QRコード */
+    /* QR */
 
     if (products[code]) {
+
 
         return {
 
@@ -1924,10 +1706,11 @@ function findProduct(code) {
 
         };
 
+
     }
 
 
-    /* JANコード */
+    /* JAN */
 
     for (
         const qrCode in products
@@ -1938,6 +1721,7 @@ function findProduct(code) {
             products[qrCode].jan === code
         ) {
 
+
             return {
 
                 code: qrCode,
@@ -1945,6 +1729,7 @@ function findProduct(code) {
                 product: products[qrCode]
 
             };
+
 
         }
 
@@ -1957,7 +1742,7 @@ function findProduct(code) {
 
 
 /* ==========================================================
-   合計金額
+   合計
 ========================================================== */
 
 function getTotal() {
@@ -1981,7 +1766,7 @@ function getTotal() {
 
 
 /* ==========================================================
-   合計点数
+   点数
 ========================================================== */
 
 function getCount() {
@@ -2046,15 +1831,14 @@ function addProduct(code) {
 
             code: code,
 
-            name:
-                product.name,
+            name: product.name,
 
-            price:
-                product.price,
+            price: product.price,
 
             quantity: 1
 
         });
+
 
     }
 
@@ -2065,16 +1849,14 @@ function addProduct(code) {
 
 
 /* ==========================================================
-   商品一覧更新
+   カート更新
 ========================================================== */
 
 function updateCart() {
 
 
     const element =
-        document.getElementById(
-            "cart"
-        );
+        document.getElementById("cart");
 
 
     if (cart.length === 0) {
@@ -2114,6 +1896,7 @@ function updateCart() {
 
                         <div>
 
+
                             <div class="product-name">
 
                                 ${escapeHtml(item.name)}
@@ -2126,6 +1909,7 @@ function updateCart() {
                                 ${item.code}
 
                             </div>
+
 
                         </div>
 
@@ -2157,6 +1941,7 @@ function updateCart() {
 
                 `;
 
+
             }
 
         );
@@ -2168,15 +1953,13 @@ function updateCart() {
     }
 
 
-    document.getElementById(
-        "total"
-    ).textContent =
+    document.getElementById("total")
+        .textContent =
         getTotal().toLocaleString();
 
 
-    document.getElementById(
-        "totalCount"
-    ).textContent =
+    document.getElementById("totalCount")
+        .textContent =
         getCount();
 
 }
@@ -2220,7 +2003,7 @@ function escapeHtml(text) {
 
 
 /* ==========================================================
-   商品1個削除
+   商品削除
 ========================================================== */
 
 function removeItem(index) {
@@ -2238,7 +2021,7 @@ function removeItem(index) {
 
 
 /* ==========================================================
-   商品全部削除
+   全削除
 ========================================================== */
 
 function clearCart() {
@@ -2256,6 +2039,7 @@ function clearCart() {
             "商品をすべて削除しますか？"
         )
     ) {
+
 
         cart = [];
 
@@ -2286,15 +2070,12 @@ function goPayment() {
     }
 
 
-    document.getElementById(
-        "paymentTotal"
-    ).textContent =
+    document.getElementById("paymentTotal")
+        .textContent =
         getTotal().toLocaleString();
 
 
-    showScreen(
-        "payment"
-    );
+    showScreen("payment");
 
 }
 
@@ -2312,36 +2093,28 @@ function selectPayment(type) {
 
     /* 現金 */
 
-    if (
-        type === "cash"
-    ) {
+    if (type === "cash") {
 
 
-        document.getElementById(
-            "cashTotal"
-        ).textContent =
+        document.getElementById("cashTotal")
+            .textContent =
             total.toLocaleString();
 
 
-        received =
+        received = "0";
+
+
+        document.getElementById("received")
+            .textContent =
             "0";
 
 
-        document.getElementById(
-            "received"
-        ).textContent =
-            "0";
-
-
-        document.getElementById(
-            "cashError"
-        ).textContent =
+        document.getElementById("cashError")
+            .textContent =
             "";
 
 
-        showScreen(
-            "cash"
-        );
+        showScreen("cash");
 
 
         return;
@@ -2350,31 +2123,26 @@ function selectPayment(type) {
 
 
     /*
-     * 現金以外は
-     * 研修用として即時完了
-     */
+       カード・電子マネーなどは
+       研修用として即時完了
+    */
 
-    document.getElementById(
-        "completeTotal"
-    ).textContent =
+    document.getElementById("completeTotal")
+        .textContent =
         total.toLocaleString();
 
 
-    document.getElementById(
-        "completeReceived"
-    ).textContent =
+    document.getElementById("completeReceived")
+        .textContent =
         total.toLocaleString();
 
 
-    document.getElementById(
-        "change"
-    ).textContent =
+    document.getElementById("change")
+        .textContent =
         "0";
 
 
-    showScreen(
-        "complete"
-    );
+    showScreen("complete");
 
 }
 
@@ -2386,9 +2154,7 @@ function selectPayment(type) {
 function keyPress(value) {
 
 
-    if (
-        received === "0"
-    ) {
+    if (received === "0") {
 
         received = "";
 
@@ -2398,8 +2164,6 @@ function keyPress(value) {
     received += value;
 
 
-    /* 数字だけ */
-
     received =
         received.replace(
             /\D/g,
@@ -2407,11 +2171,8 @@ function keyPress(value) {
         );
 
 
-    /* 最大8桁 */
+    if (received.length > 8) {
 
-    if (
-        received.length > 8
-    ) {
 
         received =
             received.substring(
@@ -2422,9 +2183,8 @@ function keyPress(value) {
     }
 
 
-    document.getElementById(
-        "received"
-    ).textContent =
+    document.getElementById("received")
+        .textContent =
 
         Number(
             received || 0
@@ -2440,19 +2200,16 @@ function keyPress(value) {
 function clearReceived() {
 
 
-    received =
+    received = "0";
+
+
+    document.getElementById("received")
+        .textContent =
         "0";
 
 
-    document.getElementById(
-        "received"
-    ).textContent =
-        "0";
-
-
-    document.getElementById(
-        "cashError"
-    ).textContent =
+    document.getElementById("cashError")
+        .textContent =
         "";
 
 }
@@ -2470,24 +2227,17 @@ function payCash() {
 
 
     const money =
-        Number(
-            received
-        );
+        Number(received);
 
 
     const error =
-        document.getElementById(
-            "cashError"
-        );
+        document.getElementById("cashError");
 
 
-    error.textContent =
-        "";
+    error.textContent = "";
 
 
-    if (
-        money < total
-    ) {
+    if (money < total) {
 
 
         const shortage =
@@ -2512,27 +2262,22 @@ function payCash() {
         money - total;
 
 
-    document.getElementById(
-        "completeTotal"
-    ).textContent =
+    document.getElementById("completeTotal")
+        .textContent =
         total.toLocaleString();
 
 
-    document.getElementById(
-        "completeReceived"
-    ).textContent =
+    document.getElementById("completeReceived")
+        .textContent =
         money.toLocaleString();
 
 
-    document.getElementById(
-        "change"
-    ).textContent =
+    document.getElementById("change")
+        .textContent =
         change.toLocaleString();
 
 
-    showScreen(
-        "complete"
-    );
+    showScreen("complete");
 
 }
 
@@ -2546,48 +2291,50 @@ function showScreen(name) {
 
     const screens = {
 
+
         scan:
             "screenScan",
+
 
         payment:
             "screenPayment",
 
+
         cash:
             "screenCash",
+
 
         complete:
             "screenComplete"
 
+
     };
 
 
-    Object.values(
-        screens
-    ).forEach(
+    Object.values(screens)
+        .forEach(
 
-        function(id) {
-
-            document
-                .getElementById(id)
-                .classList
-                .remove("active");
-
-        }
-
-    );
+            function(id) {
 
 
-    document
-        .getElementById(
-            screens[name]
-        )
-        .classList
-        .add("active");
+                document.getElementById(id)
+                    .classList
+                    .remove("active");
 
 
-    updateSteps(
-        name
-    );
+            }
+
+        );
+
+
+    document.getElementById(
+        screens[name]
+    )
+    .classList
+    .add("active");
+
+
+    updateSteps(name);
 
 }
 
@@ -2599,31 +2346,25 @@ function showScreen(name) {
 function updateSteps(name) {
 
 
-    document
-        .getElementById("step1")
+    document.getElementById("step1")
         .classList
         .remove("active");
 
 
-    document
-        .getElementById("step2")
+    document.getElementById("step2")
         .classList
         .remove("active");
 
 
-    document
-        .getElementById("step3")
+    document.getElementById("step3")
         .classList
         .remove("active");
 
 
-    if (
-        name === "scan"
-    ) {
+    if (name === "scan") {
 
 
-        document
-            .getElementById("step1")
+        document.getElementById("step1")
             .classList
             .add("active");
 
@@ -2636,21 +2377,17 @@ function updateSteps(name) {
     ) {
 
 
-        document
-            .getElementById("step2")
+        document.getElementById("step2")
             .classList
             .add("active");
 
     }
 
 
-    if (
-        name === "complete"
-    ) {
+    if (name === "complete") {
 
 
-        document
-            .getElementById("step3")
+        document.getElementById("step3")
             .classList
             .add("active");
 
@@ -2668,45 +2405,37 @@ function newCustomer() {
 
     cart = [];
 
-    received =
+    received = "0";
+
+
+    document.getElementById("received")
+        .textContent =
         "0";
 
 
-    document.getElementById(
-        "received"
-    ).textContent =
-        "0";
-
-
-    document.getElementById(
-        "cashError"
-    ).textContent =
+    document.getElementById("cashError")
+        .textContent =
         "";
 
 
-    document.getElementById(
-        "scanError"
-    ).textContent =
+    document.getElementById("scanError")
+        .textContent =
         "";
 
 
     updateCart();
 
 
-    showScreen(
-        "scan"
-    );
+    showScreen("scan");
 
 }
 
 
 /* ==========================================================
-   QR / JAN読み取り
+   スキャン成功
 ========================================================== */
 
-function onScanSuccess(
-    decodedText
-) {
+function onScanSuccess(decodedText) {
 
 
     const code =
@@ -2718,17 +2447,13 @@ function onScanSuccess(
 
 
     /*
-     * 同じコードを
-     * 1.5秒以内に連続読み取り
-     * しないようにする
-     */
+       同じコードを短時間に
+       何度も読み込まない
+    */
 
     if (
-
         code === lastScan &&
-
         now - lastScanTime < 1500
-
     ) {
 
         return;
@@ -2745,17 +2470,14 @@ function onScanSuccess(
 
 
     const result =
-        findProduct(
-            code
-        );
+        findProduct(code);
 
 
     if (!result) {
 
 
-        document.getElementById(
-            "scanError"
-        ).textContent =
+        document.getElementById("scanError")
+            .textContent =
 
             "登録されていない商品です："
             + code;
@@ -2766,14 +2488,12 @@ function onScanSuccess(
     }
 
 
-    addProduct(
-        result.code
-    );
+    addProduct(result.code);
 
 
-    document.getElementById(
-        "scanError"
-    ).textContent =
+    document.getElementById("scanError")
+        .textContent =
+
         "「"
         + result.product.name
         + "」を追加しました。";
@@ -2782,7 +2502,7 @@ function onScanSuccess(
 
 
 /* ==========================================================
-   スキャナー起動
+   カメラ自動起動
 ========================================================== */
 
 async function startScanner() {
@@ -2792,10 +2512,17 @@ async function startScanner() {
 
 
         scanner =
-            new Html5Qrcode(
-                "reader"
-            );
+            new Html5Qrcode("reader");
 
+
+        /*
+           前に動作していた方式を維持。
+
+           QR/JANのフォーマットを
+           ここでは限定しない。
+
+           まずカメラを確実に起動させる。
+        */
 
         const config = {
 
@@ -2809,31 +2536,7 @@ async function startScanner() {
 
                 height: 180
 
-            },
-
-
-            formatsToSupport: [
-
-
-                Html5QrcodeSupportedFormats.QR_CODE,
-
-
-                Html5QrcodeSupportedFormats.EAN_13,
-
-
-                Html5QrcodeSupportedFormats.EAN_8,
-
-
-                Html5QrcodeSupportedFormats.UPC_A,
-
-
-                Html5QrcodeSupportedFormats.UPC_E,
-
-
-                Html5QrcodeSupportedFormats.CODE_128
-
-
-            ]
+            }
 
 
         };
@@ -2859,8 +2562,9 @@ async function startScanner() {
             function(errorMessage) {
 
                 /*
-                 * 読み取り中のエラーは無視
-                 */
+                   読み取り途中のエラーは
+                   画面に表示しない
+                */
 
             }
 
@@ -2870,8 +2574,7 @@ async function startScanner() {
 
     }
 
-
-    catch (error) {
+    catch(error) {
 
 
         console.error(
@@ -2879,12 +2582,11 @@ async function startScanner() {
         );
 
 
-        document.getElementById(
-            "scanError"
-        ).textContent =
+        document.getElementById("scanError")
+            .textContent =
 
-            "カメラを起動できません。"
-            + "Safariのカメラ使用を許可してください。";
+            "カメラを起動できませんでした。";
+
 
     }
 
@@ -2924,9 +2626,7 @@ function showLabels() {
 
 
         const label =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
 
         label.className =
@@ -2937,9 +2637,7 @@ function showLabels() {
 
             <div class="label-name">
 
-                ${escapeHtml(
-                    product.name
-                )}
+                ${escapeHtml(product.name)}
 
             </div>
 
@@ -2981,14 +2679,12 @@ function showLabels() {
         `;
 
 
-        grid.appendChild(
-            label
-        );
+        grid.appendChild(label);
 
 
         /*
-         * QRコード生成
-         */
+           QR生成
+        */
 
         new QRCode(
 
@@ -3013,8 +2709,8 @@ function showLabels() {
 
 
         /*
-         * JANバーコード生成
-         */
+           JAN生成
+        */
 
         try {
 
@@ -3027,15 +2723,13 @@ function showLabels() {
 
                 {
 
-                    format:
-                        "ean13",
+                    format: "ean13",
 
                     width: 2,
 
                     height: 60,
 
-                    displayValue:
-                        false,
+                    displayValue: false,
 
                     margin: 0
 
@@ -3045,12 +2739,10 @@ function showLabels() {
 
 
         }
-
         catch(error) {
 
 
             console.error(
-                "JANコード生成エラー",
                 error
             );
 
@@ -3059,14 +2751,12 @@ function showLabels() {
     }
 
 
-    screen.classList.add(
-        "active"
-    );
+    screen.classList.add("active");
 
 
-    document.querySelector(
-        ".app"
-    ).style.display =
+    document.getElementById("app")
+        .style
+        .display =
         "none";
 
 }
@@ -3079,24 +2769,29 @@ function showLabels() {
 function hideLabels() {
 
 
-    document
-        .getElementById(
-            "labelsScreen"
-        )
-        .classList
-        .remove("active");
+    document.getElementById(
+        "labelsScreen"
+    )
+    .classList
+    .remove("active");
 
 
-    document.querySelector(
-        ".app"
-    ).style.display =
+    document.getElementById("app")
+        .style
+        .display =
         "block";
 
 }
 
 
 /* ==========================================================
-   起動
+   ページ読み込み時
+==========================================================
+
+   ★自動起動★
+
+   ページを開いたら
+   すぐカメラを起動します。
 ========================================================== */
 
 window.addEventListener(
@@ -3108,6 +2803,7 @@ window.addEventListener(
 
 
         startScanner();
+
 
     }
 );
