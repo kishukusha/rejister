@@ -11,13 +11,16 @@
                maximum-scale=1.0,
                user-scalable=no">
 
-<title>セルフレジ研修</title>
+<title>セルフレジ研修端末</title>
+
 
 <!-- QR・バーコード読み取り -->
 <script src="https://unpkg.com/html5-qrcode"></script>
 
+
 <!-- QRコード生成 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 
 <!-- JANバーコード生成 -->
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
@@ -25,9 +28,9 @@
 
 <style>
 
-/* ==============================
-   基本
-============================== */
+/* =========================================================
+   基本設定
+========================================================= */
 
 * {
     box-sizing: border-box;
@@ -50,8 +53,8 @@ body {
         Meiryo,
         sans-serif;
 
-    background: #eeeeee;
-    color: #333;
+    background: #f3f3f3;
+    color: #333333;
 }
 
 body {
@@ -64,22 +67,72 @@ button {
 }
 
 
-/* ==============================
+/* =========================================================
+   セブンイレブン風カラー
+=========================================================
+
+   緑    #008c45
+   オレンジ #f58220
+   赤    #d71920
+   茶    #6b3f2a
+   白    #ffffff
+
+========================================================= */
+
+
+/* =========================================================
    上部ステップ
-============================== */
+========================================================= */
 
 .steps {
+
     width: 100%;
-    height: 68px;
+    height: 74px;
 
     display: flex;
 
-    background: #fff;
+    position: relative;
 
-    border-bottom: 1px solid #ccc;
+    background: #ffffff;
+
+    border-bottom: 0;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.12);
+
 }
 
+
+/* 3色ライン */
+
+.steps::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 7px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #008c45 0%,
+            #008c45 33%,
+            #f58220 33%,
+            #f58220 66%,
+            #d71920 66%,
+            #d71920 100%
+        );
+
+}
+
+
 .step {
+
     flex: 1;
 
     display: flex;
@@ -89,35 +142,45 @@ button {
 
     position: relative;
 
-    color: #888;
+    color: #999999;
 
     font-size: 18px;
+
     font-weight: bold;
+
 }
+
 
 .step.active {
-    color: #1685b8;
+
+    color: #008c45;
+
 }
 
-.step.active::after {
+
+.step.active::before {
+
     content: "";
 
     position: absolute;
 
     left: 10%;
-    bottom: 0;
+    right: 10%;
+    bottom: 7px;
 
-    width: 80%;
-    height: 5px;
+    height: 4px;
 
-    background: #1685b8;
+    background: #008c45;
+
 }
 
-.step-number {
-    width: 32px;
-    height: 32px;
 
-    margin-right: 8px;
+.step-number {
+
+    width: 34px;
+    height: 34px;
+
+    margin-right: 9px;
 
     display: inline-flex;
 
@@ -126,402 +189,598 @@ button {
 
     border-radius: 50%;
 
-    background: #ddd;
+    background: #dddddd;
 
-    color: #666;
+    color: #666666;
+
 }
+
 
 .step.active .step-number {
-    background: #1685b8;
-    color: #fff;
+
+    background: #008c45;
+
+    color: #ffffff;
+
 }
 
 
-/* ==============================
+/* =========================================================
    画面
-============================== */
+========================================================= */
 
 .screen {
+
     display: none;
 
     min-height:
-        calc(100vh - 68px);
+        calc(100vh - 74px);
 
-    padding: 18px;
+    padding: 20px;
+
 }
+
 
 .screen.active {
+
     display: block;
+
 }
 
 
-/* ==============================
+/* =========================================================
    タイトル
-============================== */
+========================================================= */
 
 .title {
+
     text-align: center;
 
     font-size: 28px;
+
     font-weight: bold;
 
-    margin: 5px 0 20px;
+    margin:
+        5px 0 22px;
+
+    color: #333333;
+
 }
 
 
-/* ==============================
+/* =========================================================
    カード
-============================== */
+========================================================= */
 
 .card {
-    background: #fff;
 
-    border: 1px solid #ccc;
+    background: #ffffff;
 
-    border-radius: 9px;
+    border: 1px solid #dddddd;
+
+    border-radius: 7px;
 
     padding: 18px;
+
+    box-shadow:
+        0 2px 5px rgba(0,0,0,0.08);
+
 }
+
 
 .card-title {
+
     font-size: 21px;
+
     font-weight: bold;
 
-    margin-bottom: 12px;
+    margin-bottom: 15px;
+
+    padding-left: 12px;
+
+    border-left: 6px solid #f58220;
+
 }
 
 
-/* ==============================
-   スキャン
-============================== */
+/* =========================================================
+   スキャン画面
+========================================================= */
 
 .scan-layout {
-    max-width: 1100px;
+
+    max-width: 1150px;
 
     margin: auto;
 
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 18px;
-}
-
-#reader {
-    width: 100%;
-    max-width: 500px;
-
-    margin: auto;
-}
-
-.scan-message {
-    text-align: center;
-
-    margin-top: 12px;
-
-    font-size: 17px;
-
-    color: #666;
-}
-
-.scan-message strong {
-    color: #1685b8;
-}
-
-.error {
-    margin-top: 10px;
-
-    text-align: center;
-
-    color: #d00000;
-
-    font-weight: bold;
-}
-
-
-/* ==============================
-   カート
-============================== */
-
-.cart {
-    max-height: 48vh;
-
-    overflow-y: auto;
-}
-
-.empty {
-    text-align: center;
-
-    padding: 40px 10px;
-
-    color: #888;
-}
-
-.product-row {
     display: grid;
 
     grid-template-columns:
         1fr
-        60px
-        120px
-        70px;
+        1fr;
+
+    gap: 18px;
+
+}
+
+
+#reader {
+
+    width: 100%;
+
+    max-width: 520px;
+
+    margin: auto;
+
+    border-radius: 6px;
+
+    overflow: hidden;
+
+}
+
+
+.scan-message {
+
+    text-align: center;
+
+    margin-top: 13px;
+
+    font-size: 17px;
+
+    line-height: 1.7;
+
+    color: #666666;
+
+}
+
+
+.scan-message strong {
+
+    color: #008c45;
+
+}
+
+
+.error {
+
+    margin-top: 10px;
+
+    text-align: center;
+
+    color: #d71920;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================================
+   カート
+========================================================= */
+
+.cart {
+
+    max-height: 47vh;
+
+    overflow-y: auto;
+
+}
+
+
+.empty {
+
+    text-align: center;
+
+    padding: 45px 10px;
+
+    color: #999999;
+
+    font-size: 17px;
+
+}
+
+
+.product-row {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        55px
+        110px
+        65px;
 
     align-items: center;
 
     gap: 8px;
 
-    padding: 13px 0;
+    padding: 14px 0;
 
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #dddddd;
+
 }
+
 
 .product-name {
+
     font-size: 18px;
+
     font-weight: bold;
+
 }
 
+
 .product-code {
-    color: #888;
+
+    color: #008c45;
 
     font-size: 12px;
 
-    margin-top: 3px;
+    margin-top: 4px;
+
 }
 
+
 .qty {
+
     text-align: center;
 
     font-size: 19px;
+
 }
 
+
 .price {
+
     text-align: right;
 
     font-size: 18px;
+
     font-weight: bold;
+
+    color: #333333;
+
 }
+
 
 .remove {
+
     border: 0;
 
-    border-radius: 6px;
+    border-radius: 5px;
 
-    padding: 8px 5px;
+    padding: 9px 4px;
 
-    background: #eee;
+    background: #eeeeee;
+
+    color: #555555;
+
 }
 
 
-/* ==============================
+/* =========================================================
    合計
-============================== */
+========================================================= */
 
 .total-box {
-    max-width: 1100px;
 
-    margin: 15px auto 0;
+    max-width: 1150px;
 
-    padding: 16px 22px;
+    margin:
+        16px auto 0;
+
+    padding:
+        15px 22px;
 
     display: flex;
 
     justify-content: space-between;
+
     align-items: center;
 
-    background: #fff;
+    background: #ffffff;
 
-    border: 1px solid #ccc;
+    border-top: 5px solid #f58220;
 
-    border-radius: 8px;
+    border-radius: 6px;
+
+    box-shadow:
+        0 2px 5px rgba(0,0,0,0.08);
+
 }
+
 
 .total-count {
+
     font-size: 21px;
+
 }
+
 
 .total-price {
-    font-size: 38px;
+
+    font-size: 40px;
 
     font-weight: bold;
+
+    color: #d71920;
+
 }
 
 
-/* ==============================
+/* =========================================================
    ボタン
-============================== */
+========================================================= */
 
 .button {
-    min-height: 64px;
 
-    padding: 10px 22px;
+    min-height: 62px;
+
+    padding:
+        10px 22px;
 
     border: 0;
 
-    border-radius: 8px;
+    border-radius: 6px;
 
     font-size: 20px;
+
     font-weight: bold;
+
 }
+
 
 .button-blue {
-    background: #1685b8;
-    color: white;
+
+    background: #f58220;
+
+    color: #ffffff;
+
 }
+
+
+.button-blue:active {
+
+    background: #d9660c;
+
+}
+
 
 .button-green {
-    background: #159447;
-    color: white;
+
+    background: #008c45;
+
+    color: #ffffff;
+
 }
+
+
+.button-green:active {
+
+    background: #006d35;
+
+}
+
 
 .button-gray {
-    background: #e5e5e5;
-    color: #333;
+
+    background: #e8e8e8;
+
+    color: #333333;
+
 }
+
 
 .button-red {
-    background: #d33c3c;
-    color: white;
+
+    background: #d71920;
+
+    color: #ffffff;
+
 }
 
-.bottom-buttons {
-    max-width: 1100px;
 
-    margin: 15px auto 0;
+.bottom-buttons {
+
+    max-width: 1150px;
+
+    margin:
+        15px auto 0;
 
     display: flex;
 
     justify-content: space-between;
 
     gap: 15px;
+
 }
+
 
 .bottom-buttons .button {
-    min-width: 170px;
+
+    min-width: 180px;
+
 }
 
 
-/* ==============================
-   支払い
-============================== */
+/* =========================================================
+   支払い画面
+========================================================= */
 
 .payment-layout {
+
     max-width: 900px;
 
     margin: auto;
+
 }
 
+
 .payment-total {
-    background: #fff;
 
-    border: 1px solid #ccc;
+    background: #ffffff;
 
-    border-radius: 8px;
+    border-top: 5px solid #f58220;
+
+    border-radius: 6px;
 
     text-align: center;
 
     padding: 20px;
 
     margin-bottom: 20px;
+
+    box-shadow:
+        0 2px 5px rgba(0,0,0,0.08);
+
 }
+
 
 .payment-total-label {
+
     font-size: 18px;
+
 }
 
+
 .payment-total-price {
-    font-size: 42px;
+
+    font-size: 44px;
 
     font-weight: bold;
 
+    color: #d71920;
+
     margin-top: 5px;
+
 }
 
+
 .payment-grid {
+
     display: grid;
 
     grid-template-columns:
-        1fr 1fr;
+        1fr
+        1fr;
 
     gap: 14px;
+
 }
 
+
 .payment-button {
-    min-height: 135px;
 
-    background: white;
+    min-height: 140px;
 
-    border: 3px solid #d27b54;
+    background: #ffffff;
 
-    border-radius: 10px;
+    border: 3px solid #008c45;
+
+    border-radius: 8px;
 
     font-size: 22px;
 
     font-weight: bold;
 
-    color: #333;
+    color: #333333;
+
 }
+
 
 .payment-button:active {
-    background: #fff3ec;
+
+    background: #edf8f2;
+
 }
+
 
 .payment-icon {
+
     display: block;
 
-    font-size: 42px;
+    font-size: 44px;
 
-    margin-bottom: 7px;
+    margin-bottom: 8px;
+
 }
 
 
-/* ==============================
+/* =========================================================
    現金
-============================== */
+========================================================= */
 
 .cash-layout {
+
     max-width: 600px;
 
     margin: auto;
+
 }
+
 
 .cash-box {
-    background: white;
 
-    border: 1px solid #ccc;
+    background: #ffffff;
 
-    border-radius: 8px;
+    border-top: 5px solid #008c45;
+
+    border-radius: 6px;
 
     padding: 20px;
+
+    box-shadow:
+        0 2px 5px rgba(0,0,0,0.08);
+
 }
 
+
 .cash-row {
+
     display: flex;
 
     justify-content: space-between;
+
     align-items: center;
 
     font-size: 21px;
 
     padding: 7px 0;
+
 }
+
 
 .cash-total {
+
     font-size: 31px;
+
     font-weight: bold;
+
+    color: #d71920;
+
 }
+
 
 .received {
+
     margin-top: 15px;
+
 }
 
+
 .received-label {
+
     font-size: 18px;
+
     font-weight: bold;
 
     margin-bottom: 8px;
+
 }
 
+
 .received-display {
+
     width: 100%;
 
     height: 72px;
@@ -529,11 +788,12 @@ button {
     display: flex;
 
     align-items: center;
+
     justify-content: flex-end;
 
     padding: 8px 15px;
 
-    border: 2px solid #999;
+    border: 3px solid #008c45;
 
     border-radius: 7px;
 
@@ -542,9 +802,12 @@ button {
     font-size: 36px;
 
     font-weight: bold;
+
 }
 
+
 .keypad {
+
     display: grid;
 
     grid-template-columns:
@@ -553,103 +816,144 @@ button {
     gap: 8px;
 
     margin-top: 12px;
+
 }
 
+
 .key {
+
     height: 68px;
 
-    border: 1px solid #aaa;
+    border: 1px solid #aaaaaa;
 
     border-radius: 7px;
 
-    background: white;
+    background: #ffffff;
 
     font-size: 28px;
 
     font-weight: bold;
+
 }
+
 
 .key:active {
-    background: #ddd;
+
+    background: #dddddd;
+
 }
+
 
 .key-clear {
-    background: #eee;
+
+    background: #eeeeee;
+
 }
 
+
 .cash-pay {
+
     width: 100%;
 
     margin-top: 12px;
+
 }
 
 
-/* ==============================
+/* =========================================================
    完了
-============================== */
+========================================================= */
 
 .result-box {
+
     max-width: 650px;
 
-    margin: 20px auto;
+    margin:
+        20px auto;
 
-    padding: 25px;
+    padding: 28px;
 
-    background: white;
+    background: #ffffff;
 
-    border: 3px solid #159447;
+    border: 4px solid #008c45;
 
-    border-radius: 10px;
+    border-radius: 9px;
 
     text-align: center;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.08);
+
 }
 
+
 .result-title {
+
     font-size: 25px;
 
     font-weight: bold;
+
+    color: #008c45;
+
 }
 
-.result-change {
-    margin: 10px 0;
 
-    color: #159447;
+.result-change {
+
+    margin:
+        10px 0;
+
+    color: #d71920;
 
     font-size: 58px;
 
     font-weight: bold;
+
 }
+
 
 .result-message {
+
     font-size: 20px;
+
 }
 
+
 .complete-buttons {
+
     max-width: 650px;
 
     margin: auto;
+
 }
 
 
-/* ==============================
+/* =========================================================
    商品カード
-============================== */
+========================================================= */
 
 .labels-screen {
+
     display: none;
 
     min-height: 100vh;
 
     padding: 20px;
 
-    background: #eee;
+    background: #eeeeee;
+
 }
+
 
 .labels-screen.active {
+
     display: block;
+
 }
 
+
 .labels-header {
+
     max-width: 1100px;
 
     margin: auto;
@@ -657,17 +961,27 @@ button {
     display: flex;
 
     justify-content: space-between;
+
     align-items: center;
 
     margin-bottom: 20px;
+
 }
+
 
 .labels-title {
+
     font-size: 28px;
+
     font-weight: bold;
+
+    color: #008c45;
+
 }
 
+
 .labels-grid {
+
     max-width: 1100px;
 
     margin: auto;
@@ -678,156 +992,259 @@ button {
         repeat(2, 1fr);
 
     gap: 15px;
+
 }
 
+
 .product-label {
-    min-height: 310px;
+
+    min-height: 315px;
 
     padding: 15px;
 
-    background: white;
+    background: #ffffff;
 
-    border: 2px solid #333;
+    border: 3px solid #f58220;
 
     border-radius: 6px;
 
     text-align: center;
 
-    break-inside: avoid;
 }
 
+
 .label-name {
+
     font-size: 22px;
 
     font-weight: bold;
 
-    margin-bottom: 5px;
 }
 
+
 .label-price {
+
     font-size: 28px;
 
     font-weight: bold;
 
+    color: #d71920;
+
     margin-bottom: 8px;
+
 }
+
 
 .label-code {
+
     font-size: 15px;
 
-    color: #555;
+    color: #008c45;
 
     margin-bottom: 8px;
+
 }
 
+
 .label-qr {
+
     display: flex;
 
     justify-content: center;
 
     margin: 5px auto;
+
 }
 
+
 .label-barcode {
+
     width: 90%;
 
     max-width: 350px;
 
     height: 70px;
+
 }
 
+
 .label-jan {
+
     font-size: 14px;
 
     letter-spacing: 2px;
+
 }
 
 
-/* ==============================
+/* =========================================================
    印刷
-============================== */
+========================================================= */
 
 @media print {
 
     body {
-        background: white;
+
+        background: #ffffff;
+
     }
+
 
     .labels-header {
+
         display: none;
+
     }
 
+
     .labels-screen {
+
         display: block;
 
         padding: 0;
+
     }
 
+
     .labels-grid {
+
         grid-template-columns:
             repeat(2, 1fr);
 
         gap: 8px;
+
     }
 
+
     .product-label {
+
         page-break-inside: avoid;
+
     }
+
 }
 
 
-/* ==============================
-   iPad / スマホ
-============================== */
+/* =========================================================
+   iPad
+========================================================= */
 
 @media (max-width: 750px) {
 
-    .step {
-        font-size: 13px;
+
+    .steps {
+
+        height: 68px;
+
     }
 
+
+    .step {
+
+        font-size: 13px;
+
+    }
+
+
     .step-number {
+
         width: 25px;
         height: 25px;
 
         margin-right: 4px;
+
     }
+
+
+    .screen {
+
+        padding: 12px;
+
+    }
+
+
+    .title {
+
+        font-size: 23px;
+
+    }
+
 
     .scan-layout {
+
         grid-template-columns: 1fr;
+
     }
+
 
     .payment-grid {
+
         grid-template-columns:
             1fr 1fr;
+
     }
 
+
     .product-row {
+
         grid-template-columns:
             1fr
             45px
             90px;
+
     }
+
 
     .product-row .remove {
+
         display: none;
+
     }
+
 
     .total-price {
-        font-size: 30px;
+
+        font-size: 31px;
+
     }
+
 
     .bottom-buttons {
+
         flex-direction: column;
+
     }
+
 
     .bottom-buttons .button {
+
         width: 100%;
+
     }
 
+
     .labels-grid {
+
         grid-template-columns: 1fr;
+
     }
+
+
+}
+
+
+/* =========================================================
+   横向きiPad
+========================================================= */
+
+@media (min-width: 751px) {
+
+    .scan-layout {
+
+        min-height: 430px;
+
+    }
+
 }
 
 </style>
@@ -838,14 +1255,14 @@ button {
 <body>
 
 
-<!-- ==================================================
+<!-- =====================================================
      レジ本体
-================================================== -->
+===================================================== -->
 
 <div id="app">
 
 
-    <!-- ステップ -->
+    <!-- 上部ステップ -->
 
     <div class="steps">
 
@@ -889,8 +1306,9 @@ button {
     </div>
 
 
-    <!-- ==================================================
-         スキャン画面
+
+    <!-- =================================================
+         商品スキャン
     ================================================== -->
 
     <section id="screenScan"
@@ -1007,7 +1425,7 @@ button {
         </div>
 
 
-        <!-- 操作 -->
+        <!-- ボタン -->
 
         <div class="bottom-buttons">
 
@@ -1037,7 +1455,7 @@ button {
 
 
             <button
-                class="button button-gray"
+                class="button button-green"
                 onclick="showLabels()">
 
                 商品カードを表示・印刷
@@ -1051,7 +1469,8 @@ button {
     </section>
 
 
-    <!-- ==================================================
+
+    <!-- =================================================
          支払い方法
     ================================================== -->
 
@@ -1138,7 +1557,7 @@ button {
                     onclick="selectPayment('other')">
 
                     <span class="payment-icon">
-                        🔵
+                        🟢
                     </span>
 
                     その他
@@ -1170,7 +1589,8 @@ button {
     </section>
 
 
-    <!-- ==================================================
+
+    <!-- =================================================
          現金
     ================================================== -->
 
@@ -1359,7 +1779,8 @@ button {
     </section>
 
 
-    <!-- ==================================================
+
+    <!-- =================================================
          完了
     ================================================== -->
 
@@ -1470,9 +1891,10 @@ button {
 </div>
 
 
-<!-- ==================================================
-     商品カード画面
-================================================== -->
+
+<!-- =====================================================
+     商品カード
+===================================================== -->
 
 <section id="labelsScreen"
          class="labels-screen">
@@ -1527,19 +1949,17 @@ button {
 
 <script>
 
-/* ==========================================================
+/* =========================================================
    商品マスタ
-==========================================================
+=========================================================
 
-   QRコードには商品コード
+   QRコード：
+   A001 などの商品コード
 
-   例：
-   A001
+   JANコード：
+   研修用の架空コード
 
-   JANには下記の13桁を使用します。
-
-   ※研修用の架空JANコードです。
-========================================================== */
+========================================================= */
 
 const products = {
 
@@ -1668,9 +2088,9 @@ const products = {
 };
 
 
-/* ==========================================================
+/* =========================================================
    変数
-========================================================== */
+========================================================= */
 
 let cart = [];
 
@@ -1683,9 +2103,9 @@ let lastScan = "";
 let lastScanTime = 0;
 
 
-/* ==========================================================
+/* =========================================================
    商品検索
-========================================================== */
+========================================================= */
 
 function findProduct(code) {
 
@@ -1693,7 +2113,7 @@ function findProduct(code) {
     code = code.trim();
 
 
-    /* QR */
+    /* QRコード */
 
     if (products[code]) {
 
@@ -1706,11 +2126,10 @@ function findProduct(code) {
 
         };
 
-
     }
 
 
-    /* JAN */
+    /* JANコード */
 
     for (
         const qrCode in products
@@ -1730,7 +2149,6 @@ function findProduct(code) {
 
             };
 
-
         }
 
     }
@@ -1741,9 +2159,9 @@ function findProduct(code) {
 }
 
 
-/* ==========================================================
-   合計
-========================================================== */
+/* =========================================================
+   合計金額
+========================================================= */
 
 function getTotal() {
 
@@ -1765,9 +2183,9 @@ function getTotal() {
 }
 
 
-/* ==========================================================
+/* =========================================================
    点数
-========================================================== */
+========================================================= */
 
 function getCount() {
 
@@ -1788,9 +2206,9 @@ function getCount() {
 }
 
 
-/* ==========================================================
+/* =========================================================
    商品追加
-========================================================== */
+========================================================= */
 
 function addProduct(code) {
 
@@ -1839,7 +2257,6 @@ function addProduct(code) {
 
         });
 
-
     }
 
 
@@ -1848,9 +2265,9 @@ function addProduct(code) {
 }
 
 
-/* ==========================================================
-   カート更新
-========================================================== */
+/* =========================================================
+   カート表示更新
+========================================================= */
 
 function updateCart() {
 
@@ -1941,7 +2358,6 @@ function updateCart() {
 
                 `;
 
-
             }
 
         );
@@ -1965,9 +2381,9 @@ function updateCart() {
 }
 
 
-/* ==========================================================
+/* =========================================================
    HTMLエスケープ
-========================================================== */
+========================================================= */
 
 function escapeHtml(text) {
 
@@ -2002,9 +2418,9 @@ function escapeHtml(text) {
 }
 
 
-/* ==========================================================
+/* =========================================================
    商品削除
-========================================================== */
+========================================================= */
 
 function removeItem(index) {
 
@@ -2020,9 +2436,9 @@ function removeItem(index) {
 }
 
 
-/* ==========================================================
-   全削除
-========================================================== */
+/* =========================================================
+   全商品削除
+========================================================= */
 
 function clearCart() {
 
@@ -2050,9 +2466,9 @@ function clearCart() {
 }
 
 
-/* ==========================================================
-   支払い画面
-========================================================== */
+/* =========================================================
+   支払い画面へ
+========================================================= */
 
 function goPayment() {
 
@@ -2080,9 +2496,9 @@ function goPayment() {
 }
 
 
-/* ==========================================================
+/* =========================================================
    支払い方法
-========================================================== */
+========================================================= */
 
 function selectPayment(type) {
 
@@ -2123,8 +2539,9 @@ function selectPayment(type) {
 
 
     /*
-       カード・電子マネーなどは
-       研修用として即時完了
+       研修用として
+       カード・電子マネー等は
+       即時決済
     */
 
     document.getElementById("completeTotal")
@@ -2147,9 +2564,9 @@ function selectPayment(type) {
 }
 
 
-/* ==========================================================
+/* =========================================================
    テンキー
-========================================================== */
+========================================================= */
 
 function keyPress(value) {
 
@@ -2193,9 +2610,9 @@ function keyPress(value) {
 }
 
 
-/* ==========================================================
+/* =========================================================
    預かり金訂正
-========================================================== */
+========================================================= */
 
 function clearReceived() {
 
@@ -2215,9 +2632,9 @@ function clearReceived() {
 }
 
 
-/* ==========================================================
-   現金会計
-========================================================== */
+/* =========================================================
+   現金支払い
+========================================================= */
 
 function payCash() {
 
@@ -2282,9 +2699,9 @@ function payCash() {
 }
 
 
-/* ==========================================================
+/* =========================================================
    画面切り替え
-========================================================== */
+========================================================= */
 
 function showScreen(name) {
 
@@ -2321,7 +2738,6 @@ function showScreen(name) {
                     .classList
                     .remove("active");
 
-
             }
 
         );
@@ -2339,9 +2755,9 @@ function showScreen(name) {
 }
 
 
-/* ==========================================================
+/* =========================================================
    ステップ表示
-========================================================== */
+========================================================= */
 
 function updateSteps(name) {
 
@@ -2396,9 +2812,9 @@ function updateSteps(name) {
 }
 
 
-/* ==========================================================
+/* =========================================================
    次のお客様
-========================================================== */
+========================================================= */
 
 function newCustomer() {
 
@@ -2431,9 +2847,9 @@ function newCustomer() {
 }
 
 
-/* ==========================================================
+/* =========================================================
    スキャン成功
-========================================================== */
+========================================================= */
 
 function onScanSuccess(decodedText) {
 
@@ -2448,7 +2864,7 @@ function onScanSuccess(decodedText) {
 
     /*
        同じコードを短時間に
-       何度も読み込まない
+       何回も読み取らない
     */
 
     if (
@@ -2501,9 +2917,15 @@ function onScanSuccess(decodedText) {
 }
 
 
-/* ==========================================================
+/* =========================================================
    カメラ自動起動
-========================================================== */
+=========================================================
+
+   user
+   ↓
+   iPadの内側カメラ
+
+========================================================= */
 
 async function startScanner() {
 
@@ -2514,15 +2936,6 @@ async function startScanner() {
         scanner =
             new Html5Qrcode("reader");
 
-
-        /*
-           前に動作していた方式を維持。
-
-           QR/JANのフォーマットを
-           ここでは限定しない。
-
-           まずカメラを確実に起動させる。
-        */
 
         const config = {
 
@@ -2562,24 +2975,22 @@ async function startScanner() {
             function(errorMessage) {
 
                 /*
-                   読み取り途中のエラーは
-                   画面に表示しない
+                   読み取り中のエラーは
+                   表示しない
                 */
 
             }
-
 
         );
 
 
     }
 
+
     catch(error) {
 
 
-        console.error(
-            error
-        );
+        console.error(error);
 
 
         document.getElementById("scanError")
@@ -2593,9 +3004,9 @@ async function startScanner() {
 }
 
 
-/* ==========================================================
+/* =========================================================
    商品カード表示
-========================================================== */
+========================================================= */
 
 function showLabels() {
 
@@ -2682,9 +3093,7 @@ function showLabels() {
         grid.appendChild(label);
 
 
-        /*
-           QR生成
-        */
+        /* QRコード */
 
         new QRCode(
 
@@ -2708,9 +3117,7 @@ function showLabels() {
         );
 
 
-        /*
-           JAN生成
-        */
+        /* JANバーコード */
 
         try {
 
@@ -2739,12 +3146,11 @@ function showLabels() {
 
 
         }
+
         catch(error) {
 
 
-            console.error(
-                error
-            );
+            console.error(error);
 
         }
 
@@ -2762,9 +3168,9 @@ function showLabels() {
 }
 
 
-/* ==========================================================
+/* =========================================================
    商品カードを閉じる
-========================================================== */
+========================================================= */
 
 function hideLabels() {
 
@@ -2784,15 +3190,15 @@ function hideLabels() {
 }
 
 
-/* ==========================================================
-   ページ読み込み時
-==========================================================
+/* =========================================================
+   ページ起動時
+=========================================================
 
    ★自動起動★
 
-   ページを開いたら
-   すぐカメラを起動します。
-========================================================== */
+   ページを開いた瞬間に
+   iPadの内側カメラを起動
+========================================================= */
 
 window.addEventListener(
     "load",
